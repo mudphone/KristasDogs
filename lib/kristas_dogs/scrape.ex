@@ -1,6 +1,37 @@
 defmodule KristasDogs.Scrape do
   require Logger
 
+  alias KristasDogs.Houses
+
+  def record_dogs() do
+    dogs = get_dogs()
+    dogs
+    |> Enum.map(fn dog ->
+      data_id = Map.get(dog, "data-id")
+      case Houses.get_pet_by_data_id(data_id) do
+        nil ->
+          IO.puts("create dog #{Map.get(dog, "data-name")}")
+          %{
+            name: Map.get(dog, "data-name"),
+            title: Map.get(dog, "data-title"),
+            location: Map.get(dog, "data-location"),
+            data_id: data_id,
+            age_text: Map.get(dog, "data-agetext"),
+            gender: Map.get(dog, "data-gender"),
+            primary_breed: Map.get(dog, "data-primarybreed"),
+            species: Map.get(dog, "data-species"),
+            campus: Map.get(dog, "data-campus"),
+            details_url: Map.get(dog, "data-detailsurl"),
+            profile_image_url: Map.get(dog, "data-bg")
+          }
+          |> Houses.create_pet()
+        dog ->
+          IO.puts("existing dog #{inspect dog}")
+      end
+    end)
+
+  end
+
   def get_dogs() do
     # HTTPoison.start()
     url = "https://hawaiianhumane.org/adoptions/available-animals/?speciesID=1"
@@ -8,13 +39,6 @@ defmodule KristasDogs.Scrape do
       nil ->
         nil
       body ->
-        {:ok, document} = Floki.parse_document(body)
-        # Logger.debug(body)
-        document
-        # |> Floki.find("article.animal-card > div:nth-child(2) > h4")
-        #             article.animal-card:nth-child(25) > div:nth-child(2) > h4:nth-child(1)
-        # |> Enum.map(fn {"h4", [{"class", "animal-header"}], [name]} ->
-
         # article.animal-card:nth-child(25)
         # {
         #    "article",
@@ -89,15 +113,16 @@ defmodule KristasDogs.Scrape do
         #       }
         #    ]
         # }
-        |> Floki.find("article.animal-card")
-        |> Enum.map(fn {"article", data, html} ->
-          info =
+        {:ok, document} = Floki.parse_document(body)
+        result =
+          document
+          |> Floki.find("article.animal-card")
+          |> Enum.map(fn {"article", data, html} ->
             %{}
             |> parse_data(data)
             |> parse_html(html)
-          # Logger.debug(data_lookup)
-          IO.inspect(info, label: "info")
-        end)
+          end)
+        IO.inspect(result, label: "result")
     end
   end
 
@@ -110,20 +135,16 @@ defmodule KristasDogs.Scrape do
   def parse_html(info, html) do
     html
     |> Floki.attribute("div.card-img-top", "data-bg")
-    |> Enum.map(fn css_url ->
-      # IO.inspect(x, label: "card")
+    |> Enum.reduce(info, fn css_url, acc ->
       [_, url] = Regex.run(~r/url\('(.*)'\)/, css_url)
-      Map.put(info, "data-bg", url)
+      Map.put(acc, "data-bg", url)
     end)
-    # |> IO.inspect(label: "item"))
-    # info
   end
 
   def get_body(url) do
     case HTTPoison.get(url) do
       {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
-        # IO.puts body
-        body
+        :zlib.gunzip(body)
       {:ok, %HTTPoison.Response{status_code: 404}} ->
         Logger.warning("Not found :(")
         nil
