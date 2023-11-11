@@ -1,4 +1,4 @@
-# KristasDogs
+# Krista's Dogs
 
 To start your Phoenix server:
 
