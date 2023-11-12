@@ -20,7 +20,10 @@ defmodule KristasDogs.Application do
       # Start a worker by calling: KristasDogs.Worker.start_link(arg)
       # {KristasDogs.Worker, arg},
       # Start to serve requests, typically the last entry
-      KristasDogsWeb.Endpoint
+      KristasDogsWeb.Endpoint,
+
+      # Start Orchestra
+      Orchestra.System
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
