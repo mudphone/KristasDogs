@@ -8,12 +8,8 @@ defmodule KristasDogsWeb.DogsLive.Index do
     socket =
       socket
     #   |> apply_action(socket.assigns.live_action)
-    #   |> apply_initial_values(params)
-    #   |> assign_form()
       |> assign(
         dogs: Houses.list_dogs()
-    #     time_zone_opts: @time_zone_opts,
-    #     custom_duration_opts: @custom_duration_options
       )
     {:ok, socket}
   end

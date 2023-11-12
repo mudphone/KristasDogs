@@ -7,6 +7,10 @@ defmodule KristasDogs.Application do
 
   @impl true
   def start(_type, _args) do
+    # Run migrations here, since SQLite DB volume may not be ready
+    # https://fly.io/docs/elixir/advanced-guides/sqlite3/
+    KristasDogs.Release.migrate()
+
     children = [
       KristasDogsWeb.Telemetry,
       KristasDogs.Repo,

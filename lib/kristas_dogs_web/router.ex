@@ -17,8 +17,8 @@ defmodule KristasDogsWeb.Router do
   scope "/", KristasDogsWeb do
     pipe_through :browser
 
-    get "/", PageController, :home
-    live "/dogs", DogsLive.Index, :index
+    # get "/", PageController, :home
+    live "/", DogsLive.Index, :index
   end
 
   # Other scopes may use custom stacks.

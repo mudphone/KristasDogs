@@ -1,0 +1,36 @@
+# fly.toml app configuration file generated for kristas-dogs on 2023-11-11T19:59:42-10:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = "kristas-dogs"
+primary_region = "sea"
+kill_signal = "SIGTERM"
+swap_size_mb = 512
+
+[build]
+
+[deploy]
+#  release_command = "/app/bin/migrate"
+
+[env]
+  PHX_HOST = "kristas-dogs.fly.dev"
+  PORT = "8080"
+  DATABASE_PATH = "/mnt/kristas_dogs_db_vol/kristas_dogs_prod.db"
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ["app"]
+  [http_service.concurrency]
+    type = "connections"
+    hard_limit = 1000
+    soft_limit = 1000
+
+[mounts]
+  source="kristas_dogs_db_vol"
+  destination="/mnt/kristas_dogs_db_vol"
+

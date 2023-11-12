@@ -19,8 +19,10 @@ defmodule KristasDogs.MixProject do
   def application do
     [
       mod: {KristasDogs.Application, []},
-      # extra_applications: [:logger, :runtime_tools, :httpoison]
-      extra_applications: [:logger, :runtime_tools, :httpoison, :observer, :wx]
+      extra_applications: [:logger, :runtime_tools, :httpoison]
+
+      # wx won't load on Fly.io
+      # extra_applications: [:logger, :runtime_tools, :httpoison, :observer, :wx]
     ]
   end
 
