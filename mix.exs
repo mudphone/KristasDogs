@@ -52,7 +52,10 @@ defmodule KristasDogs.MixProject do
       {:jason, "~> 1.2"},
       {:dns_cluster, "~> 0.1.1"},
       {:plug_cowboy, "~> 2.5"},
-      {:httpoison, "~> 2.0"}
+      {:httpoison, "~> 2.0"},
+      {:tz, "~> 0.26.2"},
+      {:tz_extra, "~> 0.26.0"},
+      {:timex, "~> 3.7"}
     ]
   end
 

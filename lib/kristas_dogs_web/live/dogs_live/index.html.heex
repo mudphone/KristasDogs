@@ -1,0 +1,26 @@
+<div>
+  <ul>
+    <li :for={dog <- @dogs} id={"#{dog.id}"} class="flex mb-[12px]">
+      <span class="flex-initial mr-[8px] w-[160px]">
+        <img src={dog.profile_image_url} class="h-28" />
+      </span>
+      <span class="flex-initial mt-[8px] flex flex-col">
+        <span class="font-bold"><%= dog.name %></span>
+        <span class="text-sm italic">
+          <span><%= dog.campus %></span>, 
+          <span><%= dog.age_text %></span>, 
+          <span><%= dog.primary_breed %></span>
+        </span>
+        <span>
+          <span>Added: </span>
+          <span><%= dog.inserted_at |> date_ago %></span> 
+          <span class="text-xs"><%= dog.inserted_at |> date_fmt %></span>
+        </span>
+        
+        <span class="text-sky-500 hover:text-sky-700">
+          <a href={dog.details_url}>details</a>
+        </span>
+      </span>
+    </li>
+  </ul>
+</div>

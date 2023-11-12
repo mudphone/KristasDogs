@@ -21,6 +21,14 @@ defmodule KristasDogs.Houses do
     Repo.all(Pet)
   end
 
+  def list_dogs do
+    q =
+      from p in Pet,
+        where: p.species == "dog",
+        order_by: [desc: p.inserted_at]
+    Repo.all(q)
+  end
+
   @doc """
   Gets a single pet.
 
@@ -58,6 +66,9 @@ defmodule KristasDogs.Houses do
 
   """
   def create_pet(attrs \\ %{}) do
+    attrs =
+      attrs
+      |> Map.update(:species, nil, &String.downcase(&1))
     %Pet{}
     |> Pet.changeset(attrs)
     |> Repo.insert()
