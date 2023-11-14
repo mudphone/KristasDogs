@@ -21,12 +21,41 @@ defmodule KristasDogs.Houses do
     Repo.all(Pet)
   end
 
-  def list_dogs do
+  # def list_dogs do
+  #   q =
+  #     from p in Pet,
+  #       where: p.species == "dog",
+  #       order_by: [desc: p.inserted_at]
+  #   Repo.all(q)
+  # end
+
+  def list_shown_dogs do
     q =
       from p in Pet,
-        where: p.species == "dog",
+        where: p.species == "dog"
+           and is_nil(p.removed_from_website_at),
         order_by: [desc: p.inserted_at]
     Repo.all(q)
+  end
+
+  def list_archived_dogs do
+    q =
+      from p in Pet,
+        where: p.species == "dog"
+           and not is_nil(p.removed_from_website_at),
+        order_by: [desc: p.inserted_at]
+    Repo.all(q)
+  end
+
+  def update_removed_dogs(seen_ids) do
+    now = DateTime.utc_now
+
+    from(p in Pet,
+      where: is_nil(p.removed_from_website_at)
+        and p.id not in ^seen_ids,
+      update: [set: [removed_from_website_at: ^now]]
+    )
+    |> Repo.update_all([])
   end
 
   @doc """

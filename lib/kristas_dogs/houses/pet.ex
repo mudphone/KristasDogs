@@ -14,6 +14,7 @@ defmodule KristasDogs.Houses.Pet do
     field :campus, :string
     field :details_url, :string
     field :profile_image_url, :string
+    field :removed_from_website_at, :utc_datetime, default: nil
 
     timestamps(type: :utc_datetime)
   end

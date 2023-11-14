@@ -5,31 +5,40 @@ defmodule KristasDogs.Scrape do
 
   def record_dogs() do
     dogs = get_dogs()
-    dogs
-    |> Enum.map(fn dog ->
-      data_id = Map.get(dog, "data-id")
-      case Houses.get_pet_by_data_id(data_id) do
-        nil ->
-          IO.puts("create dog #{Map.get(dog, "data-name")}")
-          %{
-            name: Map.get(dog, "data-name"),
-            title: Map.get(dog, "data-title"),
-            location: Map.get(dog, "data-location"),
-            data_id: data_id,
-            age_text: Map.get(dog, "data-agetext"),
-            gender: Map.get(dog, "data-gender"),
-            primary_breed: Map.get(dog, "data-primarybreed"),
-            species: Map.get(dog, "data-species"),
-            campus: Map.get(dog, "data-campus"),
-            details_url: Map.get(dog, "data-detailsurl"),
-            profile_image_url: Map.get(dog, "data-bg")
-          }
-          |> Houses.create_pet()
-        dog ->
-          IO.puts("existing dog #{inspect dog}")
-      end
-    end)
+    pets =
+      dogs
+      |> Enum.map(fn dog ->
+        data_id = Map.get(dog, "data-id")
+        case Houses.get_pet_by_data_id(data_id) do
+          nil ->
+            IO.puts("create dog #{Map.get(dog, "data-name")}")
+            result =
+              %{
+                name: Map.get(dog, "data-name"),
+                title: Map.get(dog, "data-title"),
+                location: Map.get(dog, "data-location"),
+                data_id: data_id,
+                age_text: Map.get(dog, "data-agetext"),
+                gender: Map.get(dog, "data-gender"),
+                primary_breed: Map.get(dog, "data-primarybreed"),
+                species: Map.get(dog, "data-species"),
+                campus: Map.get(dog, "data-campus"),
+                details_url: Map.get(dog, "data-detailsurl"),
+                profile_image_url: Map.get(dog, "data-bg")
+              }
+              |> Houses.create_pet()
+            {:ok, pet} = result
+            pet
 
+          pet ->
+            IO.puts("existing dog #{inspect pet}")
+            pet
+        end
+      end)
+
+    pets
+    |> Enum.map(& &1.id)
+    |> Houses.update_removed_dogs()
   end
 
   def get_dogs() do
@@ -143,8 +152,12 @@ defmodule KristasDogs.Scrape do
 
   def get_body(url) do
     case HTTPoison.get(url) do
-      {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
-        :zlib.gunzip(body)
+      {:ok, %HTTPoison.Response{status_code: 200, headers: headers, body: body}} ->
+        if gzipped?(headers) do
+          :zlib.gunzip(body)
+        else
+          body
+        end
       {:ok, %HTTPoison.Response{status_code: 404}} ->
         Logger.warning("Not found :(")
         nil
@@ -152,5 +165,13 @@ defmodule KristasDogs.Scrape do
         Logger.warning(reason)
         nil
     end
+  end
+
+  defp gzipped?(headers) do
+    Enum.any?(headers, fn {name, value} ->
+      # Headers are case-insensitive so we compare their lower case form.
+      String.downcase(name) == "content-encoding" and
+        String.downcase(value) == "gzip"
+    end)
   end
 end
