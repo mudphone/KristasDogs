@@ -11,7 +11,7 @@ defmodule KristasDogs.Scrape do
         data_id = Map.get(dog, "data-id")
         case Houses.get_pet_by_data_id(data_id) do
           nil ->
-            IO.puts("create dog #{Map.get(dog, "data-name")}")
+            Logger.info("create dog #{Map.get(dog, "data-name")}")
             result =
               %{
                 name: Map.get(dog, "data-name"),
@@ -31,7 +31,8 @@ defmodule KristasDogs.Scrape do
             pet
 
           pet ->
-            IO.puts("existing dog #{inspect pet}")
+            # Logger.debug("existing dog #{inspect pet}")
+            Logger.info("existing dog #{pet.name}")
             pet
         end
       end)
@@ -131,7 +132,8 @@ defmodule KristasDogs.Scrape do
             |> parse_data(data)
             |> parse_html(html)
           end)
-        IO.inspect(result, label: "result")
+        # IO.inspect(result, label: "result")
+        result
     end
   end
 
