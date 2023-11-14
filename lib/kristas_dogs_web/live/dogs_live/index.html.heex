@@ -11,6 +11,13 @@
       >Archive</a>
     </span>
   </div>
+  <div class="pb-8">
+    <span>
+      <form phx-change="search">
+        <input type="text" name="dog_name" phx-debounce="500" placeholder="Search names"/>
+      </form>
+    </span>
+  </div>
   <div>
     <ul>
       <li :for={dog <- @dogs} id={"#{dog.id}"} class="flex mb-[20px]">

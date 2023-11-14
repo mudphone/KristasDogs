@@ -29,22 +29,71 @@ defmodule KristasDogs.Houses do
   #   Repo.all(q)
   # end
 
-  def list_shown_dogs do
+  def list_dogs(archived?) do
     q =
-      from p in Pet,
-        where: p.species == "dog"
-           and is_nil(p.removed_from_website_at),
-        order_by: [desc: p.inserted_at]
-    Repo.all(q)
+      Pet
+      |> where([p], p.species == "dog")
+      |> order_by([p], [desc: p.inserted_at])
+    if archived? do
+      q |> where([p], not is_nil(p.removed_from_website_at))
+    else
+      q |> where([p], is_nil(p.removed_from_website_at))
+    end
+    |> Repo.all()
+  end
+
+  def list_shown_dogs do
+    # q =
+    #   from p in Pet,
+    #     where: p.species == "dog"
+    #        and is_nil(p.removed_from_website_at),
+    #     order_by: [desc: p.inserted_at]
+    # Repo.all(q)
+    archived? = false
+    list_dogs(archived?)
   end
 
   def list_archived_dogs do
-    q =
-      from p in Pet,
-        where: p.species == "dog"
-           and not is_nil(p.removed_from_website_at),
-        order_by: [desc: p.inserted_at]
-    Repo.all(q)
+    # q =
+    #   from p in Pet,
+    #     where: p.species == "dog"
+    #        and not is_nil(p.removed_from_website_at),
+    #     order_by: [desc: p.inserted_at]
+    # Repo.all(q)
+    archived? = true
+    list_dogs(archived?)
+  end
+
+  def search_dogs("", archived?) do
+    if archived?, do: list_archived_dogs(), else: list_shown_dogs()
+  end
+
+  # Exact match
+  # def search_dogs(name, archived?) do
+  #   name = String.downcase(name)
+
+  #   q =
+  #     Pet
+  #     |> where([p], p.species == "dog")
+  #     |> where([p], fragment("lower(?)", p.name) == ^name)
+  #     |> order_by([p], [desc: p.inserted_at])
+  #   q =
+  #     if archived? do
+  #       q |> where([p], not is_nil(p.removed_from_website_at))
+  #     else
+  #       q |> where([p], is_nil(p.removed_from_website_at))
+  #     end
+  #   Repo.all(q)
+  # end
+
+  def search_dogs(search_name, archived?) do
+    search_name = String.downcase(search_name)
+    list_dogs(archived?)
+    |> Enum.filter(fn dog ->
+      dog_name = String.downcase(dog.name)
+      String.jaro_distance(dog_name, search_name) >= 0.8
+        or String.starts_with?(dog_name, search_name)
+    end)
   end
 
   def update_removed_dogs(seen_ids) do
