@@ -14,18 +14,21 @@
   <div class="pb-8">
     <span>
       <form phx-change="search">
-        <input type="text" name="dog_name" phx-debounce="500" placeholder="Search names"/>
+        <input type="text" name="dog_name" phx-debounce="500" placeholder="Fuzzy search"/>
       </form>
     </span>
   </div>
   <div>
     <ul>
       <li :for={dog <- @dogs} id={"#{dog.id}"} class="flex mb-[20px]">
-        <span class="flex-initial mr-[8px] w-1/2 h-40">
+        <span class="flex-initial mr-[8px] w-2/5 h-40">
           <img src={dog.profile_image_url} class="max-h-full w-auto" />
         </span>
-        <span class="flex-initial mt-[8px] w-1/2 flex flex-col">
-          <span class="font-bold"><%= dog.name %></span>
+        <span class="flex-initial mt-[8px] w-3/5 flex flex-col">
+          <span class="font-bold">
+            <span><%= dog.name %></span>
+            <span><%= "#{if Houses.is_male?(dog), do: "🕺", else: "💃"}" %></span>
+          </span>
           <span class="text-sm italic">
             <span><%= dog.campus %></span>, 
             <span><%= dog.age_text %></span>, 

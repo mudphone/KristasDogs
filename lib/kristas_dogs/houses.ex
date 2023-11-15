@@ -198,4 +198,7 @@ defmodule KristasDogs.Houses do
   def change_pet(%Pet{} = pet, attrs \\ %{}) do
     Pet.changeset(pet, attrs)
   end
+
+  def is_male?(%Pet{gender: gender}), do: String.downcase(gender) == "male"
+  def is_female?(%Pet{gender: gender}), do: String.downcase(gender) == "female"
 end
