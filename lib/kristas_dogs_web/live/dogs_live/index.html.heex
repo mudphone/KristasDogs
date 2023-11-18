@@ -21,7 +21,10 @@
   <div>
     <ul>
       <li :for={dog <- @dogs} id={"#{dog.id}"} class="flex flex-col mb-[20px]">
-        <div class={"bg-sky-500 h-1 w-[#{pct_new(dog)}%]"}></div>
+        <div class={"bg-sky-500 h-0.5 w-[#{pct_new(dog)}%]"}></div>
+        <div class="relative">
+          <div class="absolute top-0 right-0 clear-right text-right text-sky-500 text-xs"><%= dog.inserted_at |> date_ago %></div>
+        </div>
         <div class="flex">
           <span class="flex-initial mr-[8px] w-2/5 h-40">
             <img src={dog.profile_image_url} class="max-h-full w-auto" />
@@ -49,9 +52,7 @@
               <% end %>
             </span>
             <span>
-              <span>Added: </span>
-              <span><%= dog.inserted_at |> date_ago %></span> 
-              <span class="text-xs"><%= dog.inserted_at |> date_fmt %></span>
+              <span class="text-xs">Added: <%= dog.inserted_at |> date_fmt %></span>
             </span>
             <%= if @live_action == :archive do %>
             <span>
