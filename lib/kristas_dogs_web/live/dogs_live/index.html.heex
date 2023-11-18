@@ -20,49 +20,52 @@
   </div>
   <div>
     <ul>
-      <li :for={dog <- @dogs} id={"#{dog.id}"} class="flex mb-[20px]">
-        <span class="flex-initial mr-[8px] w-2/5 h-40">
-          <img src={dog.profile_image_url} class="max-h-full w-auto" />
-        </span>
-        <span class="flex-initial mt-[8px] w-3/5 flex flex-col">
-          <span class="font-bold">
-            <span><%= dog.name %></span>
-            <span><%= "#{if Houses.is_male?(dog), do: "🕺", else: "💃"}" %></span>
+      <li :for={dog <- @dogs} id={"#{dog.id}"} class="flex flex-col mb-[20px]">
+        <div class={"bg-sky-500 h-1 w-[#{pct_new(dog)}%]"}></div>
+        <div class="flex">
+          <span class="flex-initial mr-[8px] w-2/5 h-40">
+            <img src={dog.profile_image_url} class="max-h-full w-auto" />
           </span>
-          <span class="text-sm italic">
-            <%= if dog.campus do %>
-              <span><%= dog.campus %></span>, 
-            <% else %>
-              <span>[no campus]</span>, 
+          <span class="flex-initial mt-[8px] w-3/5 flex flex-col">
+            <span class="font-bold">
+              <span><%= dog.name %></span>
+              <span><%= "#{if Houses.is_male?(dog), do: "🕺", else: "💃"}" %></span>
+            </span>
+            <span class="text-sm italic">
+              <%= if dog.campus do %>
+                <span><%= dog.campus %></span>, 
+              <% else %>
+                <span>[no campus]</span>, 
+              <% end %>
+              <%= if dog.age_text do %>
+                <span><%= dog.age_text %></span>, 
+              <% else %>
+                <span>[no age]</span>, 
+              <% end %>
+              <%= if dog.primary_breed do %>
+                <span><%= dog.primary_breed %></span>
+              <% else %>
+                <span>[no breed]</span>, 
+              <% end %>
+            </span>
+            <span>
+              <span>Added: </span>
+              <span><%= dog.inserted_at |> date_ago %></span> 
+              <span class="text-xs"><%= dog.inserted_at |> date_fmt %></span>
+            </span>
+            <%= if @live_action == :archive do %>
+            <span>
+              <span>🎉Removed: </span>
+              <span><%= dog.removed_from_website_at |> date_ago %></span> 
+              <span class="text-xs"><%= dog.removed_from_website_at |> date_fmt %></span>
+            </span>
             <% end %>
-            <%= if dog.age_text do %>
-              <span><%= dog.age_text %></span>, 
-            <% else %>
-              <span>[no age]</span>, 
-            <% end %>
-            <%= if dog.primary_breed do %>
-              <span><%= dog.primary_breed %></span>
-            <% else %>
-              <span>[no breed]</span>, 
-            <% end %>
+            
+            <span class="text-sky-500 hover:text-sky-700">
+              <a href={dog.details_url}>details</a>
+            </span>
           </span>
-          <span>
-            <span>Added: </span>
-            <span><%= dog.inserted_at |> date_ago %></span> 
-            <span class="text-xs"><%= dog.inserted_at |> date_fmt %></span>
-          </span>
-          <%= if @live_action == :archive do %>
-          <span>
-            <span>🎉Removed: </span>
-            <span><%= dog.removed_from_website_at |> date_ago %></span> 
-            <span class="text-xs"><%= dog.removed_from_website_at |> date_fmt %></span>
-          </span>
-          <% end %>
-          
-          <span class="text-sky-500 hover:text-sky-700">
-            <a href={dog.details_url}>details</a>
-          </span>
-        </span>
+        </div>
       </li>
     </ul>
   </div>

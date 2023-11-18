@@ -2,6 +2,7 @@ defmodule KristasDogsWeb.DogsLive.Index do
   use KristasDogsWeb, :live_view
 
   alias KristasDogs.Houses
+  alias KristasDogs.Houses.Pet
 
   @impl true
   def mount(_params, _session, socket) do
@@ -56,5 +57,13 @@ defmodule KristasDogsWeb.DogsLive.Index do
     utc
     |> DateTime.shift_zone!("Pacific/Honolulu")
     |> Calendar.strftime("%-I:%M%P %a %b %-d, %y %Z")
+  end
+
+  @pct_new_range_min 60 * 96 # four days in minutes
+  defp pct_new(%Pet{} = pet) do
+    mins = Houses.minutes_since_added(pet)
+    mins = min(@pct_new_range_min, mins)
+    ((@pct_new_range_min - mins) * 100)
+    |> div(@pct_new_range_min)
   end
 end

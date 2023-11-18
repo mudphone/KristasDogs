@@ -216,4 +216,9 @@ defmodule KristasDogs.Houses do
 
   def is_male?(%Pet{gender: gender}), do: String.downcase(gender) == "male"
   def is_female?(%Pet{gender: gender}), do: String.downcase(gender) == "female"
+
+  def minutes_since_added(%Pet{inserted_at: inserted_at}) do
+    now = DateTime.utc_now()
+    DateTime.diff(now, inserted_at, :minute)
+  end
 end
