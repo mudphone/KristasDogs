@@ -107,6 +107,21 @@ defmodule KristasDogs.Houses do
     |> Repo.update_all([])
   end
 
+  def unremove_dog(pet_id) do
+    from(p in Pet,
+      where: not is_nil(p.removed_from_website_at)
+        and p.id == ^pet_id,
+      update: [set: [removed_from_website_at: nil]]
+    )
+    |> Repo.update_all([])
+  end
+
+  def ensure_available_dog(%Pet{id: id, removed_from_website_at: removed_at}) do
+    if removed_at do
+      unremove_dog(id)
+    end
+  end
+
   @doc """
   Gets a single pet.
 

@@ -3,6 +3,8 @@ defmodule KristasDogs.Scrape do
 
   alias KristasDogs.Houses
 
+  @dogs_url "https://hawaiianhumane.org/adoptions/available-animals/?speciesID=1"
+
   def record_dogs() do
     dogs = get_dogs()
     pets =
@@ -33,6 +35,7 @@ defmodule KristasDogs.Scrape do
           pet ->
             # Logger.debug("existing dog #{inspect pet}")
             Logger.info("existing dog #{pet.name}")
+            Houses.ensure_available_dog(pet)
             pet
         end
       end)
@@ -42,10 +45,11 @@ defmodule KristasDogs.Scrape do
     |> Houses.update_removed_dogs()
   end
 
+  def dogs_url(), do: @dogs_url
+
   def get_dogs() do
     # HTTPoison.start()
-    url = "https://hawaiianhumane.org/adoptions/available-animals/?speciesID=1"
-    case get_body(url) do
+    case get_body(dogs_url()) do
       nil ->
         nil
       body ->

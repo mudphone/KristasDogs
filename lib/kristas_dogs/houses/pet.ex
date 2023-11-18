@@ -22,7 +22,8 @@ defmodule KristasDogs.Houses.Pet do
   @doc false
   def changeset(pet, attrs) do
     pet
+    # |> cast(attrs, [:name, :data_id, :age_text, :gender, :primary_breed, :species, :title, :campus, :location, :details_url, :profile_image_url])
     |> cast(attrs, [:name, :data_id, :age_text, :gender, :primary_breed, :species, :title, :campus, :location, :details_url, :profile_image_url])
-    |> validate_required([:name, :data_id, :age_text, :gender, :primary_breed, :species, :title, :campus, :location, :details_url, :profile_image_url])
+    |> validate_required([:name, :data_id, :details_url, :profile_image_url])
   end
 end
