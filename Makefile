@@ -7,3 +7,9 @@ console:
 
 deploy:
 	flyctl deploy
+
+# In case the builder will not connect.
+# Kill the following process:
+#   /usr/local/bin/fly agent run /Users/username/.fly/agent-logs/4102937902.log
+fly-restart:
+	flyctl agent restart

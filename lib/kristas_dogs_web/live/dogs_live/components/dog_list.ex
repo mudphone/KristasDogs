@@ -15,12 +15,10 @@ defmodule KristasDogsWeb.DogsLive.DogList do
     {:ok, ago} =
       utc
       |> Timex.format("{relative}", :relative)
-    ago =
-      ago
-      |> String.replace("hour", "hr")
-      |> String.replace("minute", "min")
-      |> String.replace("second", "sec")
-    "added #{ago}"
+    ago
+    |> String.replace("hour", "hr")
+    |> String.replace("minute", "min")
+    |> String.replace("second", "sec")
   end
 
   defp date_fmt(utc) do
