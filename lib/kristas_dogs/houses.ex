@@ -25,36 +25,12 @@ defmodule KristasDogs.Houses do
     Repo.all(Pet)
   end
 
-  # def list_dogs do
-  #   q =
-  #     from p in Pet,
-  #       where: p.species == "dog",
-  #       order_by: [desc: p.inserted_at]
-  #   Repo.all(q)
-  # end
-
-  def list_dogs(archived?) do
-    q =
-      Pet
-      |> where([p], p.species == "dog")
-      |> order_by([p], [desc: p.inserted_at])
-    if archived? do
-      q |> where([p], not is_nil(p.removed_from_website_at))
-    else
-      q |> where([p], is_nil(p.removed_from_website_at))
-    end
-    |> Repo.all()
-  end
-
   def list_shown_dogs do
-    # q =
-    #   from p in Pet,
-    #     where: p.species == "dog"
-    #        and is_nil(p.removed_from_website_at),
-    #     order_by: [desc: p.inserted_at]
-    # Repo.all(q)
-    archived? = false
-    list_dogs(archived?)
+    Pet
+    |> where([p], p.species == "dog")
+    |> order_by([p], [desc: p.inserted_at])
+    |> where([p], is_nil(p.removed_from_website_at))
+    |> Repo.all()
   end
 
   def list_archived_dogs(page \\ 1) do
@@ -67,8 +43,6 @@ defmodule KristasDogs.Houses do
         limit: @archive_page_size,
         offset: ^offset
     Repo.all(q)
-    # archived? = true
-    # list_dogs(archived?)
   end
 
   def count_archived_dogs() do
@@ -78,10 +52,6 @@ defmodule KristasDogs.Houses do
            and not is_nil(p.removed_from_website_at),
         select: count(p.id)
     Repo.one(q)
-  end
-
-  def search_dogs("", archived?) do
-    if archived?, do: list_archived_dogs(), else: list_shown_dogs()
   end
 
   # Exact match
@@ -102,14 +72,28 @@ defmodule KristasDogs.Houses do
   #   Repo.all(q)
   # end
 
-  def search_dogs(search_name, archived?) do
+  def search_shown_dogs(""), do: list_shown_dogs()
+  def search_shown_dogs(search_name) do
     search_name = String.downcase(search_name)
-    list_dogs(archived?)
+    list_shown_dogs()
     |> Enum.filter(fn dog ->
       dog_name = String.downcase(dog.name)
       String.jaro_distance(dog_name, search_name) >= 0.8
         or String.starts_with?(dog_name, search_name)
     end)
+  end
+
+  def search_archived_dogs("", %{page: page}), do: list_archived_dogs(page)
+  def search_archived_dogs(search_name, _) do
+    # Note: SQLite `like` is case insensitive by default
+    search_term = "%#{search_name}%"
+    q =
+      from p in Pet,
+        where: p.species == "dog"
+           and not is_nil(p.removed_from_website_at)
+           and like(p.name, ^search_term),
+        order_by: [desc: p.inserted_at]
+    Repo.all(q)
   end
 
   def update_removed_dogs(seen_ids) do

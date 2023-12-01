@@ -25,8 +25,7 @@ defmodule KristasDogsWeb.DogsLive.Index do
 
   @impl true
   def handle_event("search", %{"dog_name" => dog_name}, socket) do
-    archived? = socket.assigns.live_action == :archive
-    dogs = Houses.search_dogs(dog_name, archived?)
+    dogs = Houses.search_shown_dogs(dog_name)
     socket =
       socket
       |> assign(dogs: dogs)
