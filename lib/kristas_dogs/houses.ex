@@ -8,6 +8,10 @@ defmodule KristasDogs.Houses do
 
   alias KristasDogs.Houses.Pet
 
+  @archive_page_size 100
+
+  def archive_page_size, do: @archive_page_size
+
   @doc """
   Returns the list of pets.
 
@@ -53,15 +57,27 @@ defmodule KristasDogs.Houses do
     list_dogs(archived?)
   end
 
-  def list_archived_dogs do
-    # q =
-    #   from p in Pet,
-    #     where: p.species == "dog"
-    #        and not is_nil(p.removed_from_website_at),
-    #     order_by: [desc: p.inserted_at]
-    # Repo.all(q)
-    archived? = true
-    list_dogs(archived?)
+  def list_archived_dogs(page \\ 1) do
+    offset = @archive_page_size * (page - 1)
+    q =
+      from p in Pet,
+        where: p.species == "dog"
+           and not is_nil(p.removed_from_website_at),
+        order_by: [desc: p.inserted_at],
+        limit: @archive_page_size,
+        offset: ^offset
+    Repo.all(q)
+    # archived? = true
+    # list_dogs(archived?)
+  end
+
+  def count_archived_dogs() do
+    q =
+      from p in Pet,
+        where: p.species == "dog"
+           and not is_nil(p.removed_from_website_at),
+        select: count(p.id)
+    Repo.one(q)
   end
 
   def search_dogs("", archived?) do

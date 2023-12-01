@@ -19,6 +19,7 @@ defmodule KristasDogsWeb.Router do
 
     # get "/", PageController, :home
     live "/", DogsLive.Index, :index
+    live "/archive/:page", DogsLive.Index, :archive
     live "/archive", DogsLive.Index, :archive
   end
 
