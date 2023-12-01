@@ -1,10 +1,14 @@
 <div>
   <%= for pg <- (1..@num_pages) do %>
     <span class="text-sky-700">
-      <.link
-        patch={"/archive/#{pg}"}
-        class={"#{if pg == @page, do: "underline underline-offset-2 text-slate-950"}"}
-      ><%= pg %></.link><%= unless pg == @num_pages do %>,<% end %>
+      <%= if pg == @page do %>
+        <span class="font-semibold underline underline-offset-2 text-slate-950"
+        ><%= pg %></span><%= unless pg == @num_pages do %>,<% end %>
+      <% else %>
+        <.link
+          patch={~p"/archive/#{pg}"}
+        ><%= pg %></.link><%= unless pg == @num_pages do %>,<% end %>
+      <% end %>
     </span>
   <% end %>
   <span>

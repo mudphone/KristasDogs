@@ -1,0 +1,17 @@
+<span>
+  <%= if @page_name == :current do %>
+    <span class="font-semibold underline underline-offset-2 pr-2">
+      Current</span>
+    <a
+      href={~p"/archive"}
+      class={"text-sky-500 hover:text-sky-700 pr-2 #{if @page_name == :archive, do: "underline"}"}
+    >Archive</a>
+  <% else %>
+    <a
+      href={~p"/"}
+      class={"text-sky-500 hover:text-sky-700 pr-2 #{if @page_name == :current, do: "underline"}"}
+    >Current</a>
+    <span class="font-semibold underline underline-offset-2"
+    >Archive</span>
+  <% end %>
+</span>

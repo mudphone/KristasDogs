@@ -1,4 +1,4 @@
-defmodule KristasDogsWeb.DogsLive.Pager do
+defmodule KristasDogsWeb.DogsLive.NavMenu do
   use Phoenix.LiveComponent
   use Phoenix.VerifiedRoutes,
     endpoint: KristasDogsWeb.Endpoint,
