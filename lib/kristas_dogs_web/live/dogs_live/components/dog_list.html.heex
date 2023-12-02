@@ -41,7 +41,10 @@
           <span class="text-xs"></span>
         </span>
         
-        <span class="text-sky-500 hover:text-sky-700">
+        <span
+          :if={@page_name == :current}
+          class="text-sky-500 hover:text-sky-700"
+        >
           <a href={dog.details_url}>details</a>
         </span>
       </span>
