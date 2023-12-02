@@ -39,7 +39,7 @@ defmodule KristasDogs.Houses do
       from p in Pet,
         where: p.species == "dog"
            and not is_nil(p.removed_from_website_at),
-        order_by: [desc: p.inserted_at],
+        order_by: [desc: p.removed_from_website_at],
         limit: @archive_page_size,
         offset: ^offset
     Repo.all(q)
