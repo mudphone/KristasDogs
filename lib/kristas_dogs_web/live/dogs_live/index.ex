@@ -33,9 +33,11 @@ defmodule KristasDogsWeb.DogsLive.Index do
   end
 
   defp apply_action(socket, :index) do
-    dogs = Houses.list_shown_dogs()
     socket
     |> assign(:page_title, "Current")
-    |> assign(dogs: dogs)
+    |> assign(
+      dogs: Houses.list_shown_dogs(),
+      num_dogs: Houses.count_shown_dogs()
+    )
   end
 end

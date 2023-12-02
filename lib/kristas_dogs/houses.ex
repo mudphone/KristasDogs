@@ -45,13 +45,28 @@ defmodule KristasDogs.Houses do
     Repo.all(q)
   end
 
-  def count_archived_dogs() do
+  def count_dogs(archived?) do
     q =
       from p in Pet,
-        where: p.species == "dog"
-           and not is_nil(p.removed_from_website_at),
+        where: p.species == "dog",
         select: count(p.id)
+    q =
+      if archived? do
+        q |> where([p], not is_nil(p.removed_from_website_at))
+      else
+        q |> where([p], is_nil(p.removed_from_website_at))
+      end
     Repo.one(q)
+  end
+
+  def count_shown_dogs() do
+    archived? = false
+    count_dogs(archived?)
+  end
+
+  def count_archived_dogs() do
+    archived? = true
+    count_dogs(archived?)
   end
 
   # Exact match

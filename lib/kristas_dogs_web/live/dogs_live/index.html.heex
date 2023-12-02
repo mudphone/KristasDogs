@@ -5,11 +5,14 @@
       page_name={:current}
     />
   </div>
-  <div class="pb-8">
+  <div class="pb-8 flex flex-row items-center">
     <span>
       <form phx-change="search">
         <input type="text" name="dog_name" phx-debounce="500" placeholder="Fuzzy search"/>
       </form>
+    </span>
+    <span class="ml-4">
+      <%= @num_dogs %> dogs are currently available.
     </span>
   </div>
   <div>
