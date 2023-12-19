@@ -106,6 +106,7 @@ defmodule KristasDogs.Stats do
 
   defp fill_counts(next_utc) do
     if DateTime.before?(next_utc, DateTime.utc_now()) do
+      Logger.info("Adding count for day: #{next_utc}")
       {:ok, _} =
         %{
           counter_type: PetCount.counter_type_dogs_available(),
@@ -153,7 +154,7 @@ defmodule KristasDogs.Stats do
     Repo.one(q)
   end
 
-  defp get_next_count_date_utc() do
+  def get_next_count_date_utc() do
     case get_last_dog_count_rec() do
       %PetCount{count_at: count_at} ->
         Logger.info("Taking new count after last count: #{inspect count_at}")

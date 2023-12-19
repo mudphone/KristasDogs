@@ -13,3 +13,9 @@ deploy:
 #   /usr/local/bin/fly agent run /Users/username/.fly/agent-logs/4102937902.log
 fly-restart:
 	flyctl agent restart
+
+fly-login: fly-restart
+	flyctl auth login
+
+fly-logs:
+	flyctl logs
