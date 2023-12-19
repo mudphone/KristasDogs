@@ -2,9 +2,6 @@ defmodule Orchestra.System do
   use Supervisor
 
   alias Orchestra.{
-    # Cache,
-    # Conductor,
-    # Metronome,
     ProcessRegistry,
     Scheduler
   }
@@ -17,10 +14,7 @@ defmodule Orchestra.System do
   def init(:ok) do
     children = [
       ProcessRegistry,
-      # Cache,
-      # Metronome,
       Scheduler.Cron
-      # Conductor
     ]
 
     Supervisor.init(children, strategy: :one_for_one)

@@ -19,6 +19,8 @@ defmodule KristasDogs.Houses.Pet do
     timestamps(type: :utc_datetime)
   end
 
+  def species(:dog), do: "dog"
+
   @doc false
   def changeset(pet, attrs) do
     pet

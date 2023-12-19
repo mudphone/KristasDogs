@@ -111,3 +111,8 @@ if config_env() == :prod do
   #
   # See https://hexdocs.pm/swoosh/Swoosh.html#module-installation for details.
 end
+
+# Usage:
+#   Application.get_env(:kristas_dogs, :time)[:time_zone]
+config :kristas_dogs, :time,
+  time_zone: "Pacific/Honolulu"
