@@ -32,7 +32,7 @@ function drawDogSpark(counts) {
     // ctx.fillStyle = "rgba(14, 165, 233, 0.7)"
 
     // text-orange-400
-    ctx.fillStyle = "rgba(251, 146, 60, 0.75)"
+    ctx.fillStyle = "rgba(251, 146, 60, 0.70)"
 
     ctx.fillRect(x, y, barW, barH)
 
