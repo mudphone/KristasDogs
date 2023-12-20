@@ -31,8 +31,8 @@ defmodule KristasDogs.Stats do
       |> DateTime.add(-14, :day)
     q =
       from p in PetCount,
-        where: p.inserted_at >= ^two_weeks_ago,
-        order_by: [asc: p.inserted_at]
+        where: p.count_at >= ^two_weeks_ago,
+        order_by: [asc: p.count_at]
     results =
       q
       |> Repo.all()

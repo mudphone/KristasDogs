@@ -6,7 +6,12 @@ defmodule KristasDogs.Scrape do
   @dogs_url "https://hawaiianhumane.org/adoptions/available-animals/?speciesID=1"
 
   def record_dogs() do
-    dogs = get_dogs()
+    get_dogs()
+    |> process_dogs()
+  end
+
+  defp process_dogs(nil), do: Logger.warning("No dogs returned from scrape.")
+  defp process_dogs(dogs) do
     pets =
       dogs
       |> Enum.map(fn dog ->

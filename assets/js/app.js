@@ -40,3 +40,4 @@ liveSocket.connect()
 window.liveSocket = liveSocket
 
 import "./tailwind/css_for_backend_engineers"
+import "./dogs_live/index"

@@ -8,11 +8,21 @@
   <div class="pb-8 flex flex-row items-center">
     <span>
       <form phx-change="search">
-        <input type="text" name="dog_name" phx-debounce="500" placeholder="Fuzzy search"/>
+        <input type="text" name="dog_name" phx-debounce="500" placeholder="Fuzzy search"
+          class="focus:ring-orange-400 focus:border-orange-400 border-s-zinc-400 rounded"
+        />
       </form>
     </span>
-    <span class="ml-4">
-      <%= @num_dogs %> dogs are currently available.
+    <span class="ml-4 flex flex-row">
+      <div class="mr-2">
+        <canvas id="dog-spark" width="100" height="26"></canvas>
+      </div>
+      <div class="relative top-3 text-xs text-orange-400">
+        <%= @num_dogs %> dogs available
+      </div>
+      <div class="relative -left-52 top-6 -ml-1 text-xs text-orange-400">
+        2 wks ago
+      </div>
     </span>
   </div>
   <div>
