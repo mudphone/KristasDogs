@@ -35,6 +35,7 @@ defmodule KristasDogsWeb.DogsLive.DogList do
     |> div(@pct_new_range_min)
   end
 
+  defp size_emoji(%Pet{size: nil}), do: ""
   defp size_emoji(%Pet{size: size}) do
     case String.downcase(size) do
       "small" -> "🤏"
