@@ -5,9 +5,11 @@
       <div class="absolute top-0 right-0 clear-right text-right text-orange-400 text-xs">added <%= dog.inserted_at |> date_ago %></div>
     </div>
     <div class="flex">
-      <span class="flex-initial mr-[8px] w-2/5 h-40">
-        <img src={dog.profile_image_url} class="max-h-full w-auto" />
-      </span>
+      <.live_component
+        module={DogImage}
+        id={"dog-image-#{dog.id}"}
+        dog={dog}
+      />
       <span class="flex-initial mt-4 w-3/5 flex flex-col">
         <span class="font-bold">
           <span><%= dog.name %></span>
@@ -33,7 +35,17 @@
           <% end %>
         </span>
         <span>
-          <span class="text-xs text-orange-400">Added: <%= dog.inserted_at |> date_fmt %></span>
+          
+          <div class="flex flex-row text-xs text-orange-400">
+            <div class="flex flex-col">
+              <div class="text-right pr-2">Added:</div>
+              <div></div>
+            </div>
+            <div class="flex flex-col">
+              <div><%= dog.inserted_at |> time_day_fmt %></div>
+              <div><%= dog.inserted_at |> date_tz_fmt %></div>
+            </div>
+          </div>
         </span>
         <span
           :if={@page_name == :archive}

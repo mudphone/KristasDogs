@@ -31,6 +31,7 @@ defmodule KristasDogs.Houses do
     |> where([p], p.species == ^species)
     |> order_by([p], [desc: p.inserted_at])
     |> where([p], is_nil(p.removed_from_website_at))
+    |> preload([p], [:pet_images])
     |> Repo.all()
   end
 

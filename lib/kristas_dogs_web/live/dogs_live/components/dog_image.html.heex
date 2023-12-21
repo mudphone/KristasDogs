@@ -1,0 +1,11 @@
+<span class="flex-initial mr-[8px] mb-5 w-2/5 h-40"
+  phx-click="image-change"
+  phx-target={@myself}
+>
+  <img src={@dog_image} class="max-h-full w-auto" />
+  <ul :if={@num_images > 1} class="flex flex-row">
+    <li :for={{_img, i} <- Enum.with_index(@all_images)}
+      class={"w-2 h-2 rounded bg-black #{if i == @image_index, do: "bg-sky-500", else: "bg-gray-400"}"}
+    ></li>
+  </ul>
+</span>

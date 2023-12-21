@@ -6,6 +6,7 @@ defmodule KristasDogsWeb.DogsLive.DogList do
 
   alias KristasDogs.Houses
   alias KristasDogs.Houses.Pet
+  alias KristasDogsWeb.DogsLive.DogImage
 
   def update(assigns, socket) do
     {:ok, assign(socket, assigns)}
@@ -25,6 +26,18 @@ defmodule KristasDogsWeb.DogsLive.DogList do
     utc
     |> DateTime.shift_zone!("Pacific/Honolulu")
     |> Calendar.strftime("%-I:%M%P %a %b %-d, %y %Z")
+  end
+
+  defp time_day_fmt(utc) do
+    utc
+    |> DateTime.shift_zone!("Pacific/Honolulu")
+    |> Calendar.strftime("%-I:%M%P %a")
+  end
+
+  defp date_tz_fmt(utc) do
+    utc
+    |> DateTime.shift_zone!("Pacific/Honolulu")
+    |> Calendar.strftime("%b %-d, %y %Z")
   end
 
   @pct_new_range_min 60 * 96 # four days in minutes
