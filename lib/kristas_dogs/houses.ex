@@ -47,7 +47,7 @@ defmodule KristasDogs.Houses do
     Repo.all(q)
   end
 
-  def list_dogs_without_details() do
+  def list_available_dogs_without_details() do
     checked_since =
       DateTime.utc_now()
       |> DateTime.add(-30, :day)

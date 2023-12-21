@@ -9,7 +9,7 @@ defmodule KristasDogs.Scrape do
   def record_dogs(), do: Dogs.record_dogs()
 
   def record_details() do
-    dogs = Houses.list_dogs_without_details()
+    dogs = Houses.list_available_dogs_without_details()
     for {%Pet{} = dog, i} <- Enum.with_index(dogs) do
       if i > 0 do
         Logger.info("Sleeping before details request...")
