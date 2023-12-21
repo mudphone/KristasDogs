@@ -47,13 +47,18 @@ defmodule KristasDogs.Houses do
     Repo.all(q)
   end
 
-  def list_dogs_without_details do
+  def list_dogs_without_details() do
+    checked_since =
+      DateTime.utc_now()
+      |> DateTime.add(-30, :day)
     species = Pet.species(:dog)
-    Pet
-    |> where([p], p.species == ^species)
-    # |> where([p], is_nil(p.removed_from_website_at))
-    |> where([p], is_nil(p.details_added_at))
-    |> Repo.all()
+    q =
+      from p in Pet,
+      where: p.species == ^species
+          and is_nil(p.details_added_at)
+          and (is_nil(p.details_checked_at)
+               or p.details_checked_at <= ^checked_since)
+    q |> Repo.all()
   end
 
   def count_dogs(archived?) do

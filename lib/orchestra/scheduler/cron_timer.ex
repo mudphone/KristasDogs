@@ -41,8 +41,9 @@ defmodule Orchestra.Scheduler.CronTimer do
   @impl GenServer
   def handle_info(:tick, state) do
     Logger.debug("Do work")
-    # Scrape.record_dogs()
-    # Stats.fill_all_counts()
+    Scrape.record_dogs()
+    Scrape.record_details()
+    Stats.fill_all_counts()
 
     Process.send_after(self(), :tick, @tick_millis)
     {:noreply, state}

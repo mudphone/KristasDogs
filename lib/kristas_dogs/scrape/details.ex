@@ -17,7 +17,9 @@ defmodule KristasDogs.Scrape.Details do
       detail_url(pet.data_id)
       |> get_details()
 
-    unless is_nil(info) do
+    if is_nil(info) do
+      PetDetails.update_pet_details_checked(pet)
+    else
       process_details(info, pet)
     end
   end

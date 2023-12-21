@@ -23,6 +23,7 @@ defmodule KristasDogs.Houses.Pet do
     field :weight, :string
     field :altered, :boolean
     field :details_added_at, :utc_datetime
+    field :details_checked_at, :utc_datetime
 
     has_many :pet_images, PetImage
 
@@ -42,5 +43,11 @@ defmodule KristasDogs.Houses.Pet do
     pet
     |> cast(attrs, [:description, :size, :weight, :altered, :details_added_at])
     |> validate_required([:size, :weight, :altered, :details_added_at])
+  end
+
+  def changeset_details_checked_at(pet, attrs) do
+    pet
+    |> cast(attrs, [:details_checked_at])
+    |> validate_required([:details_checked_at])
   end
 end
