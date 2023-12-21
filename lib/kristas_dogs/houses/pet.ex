@@ -16,6 +16,12 @@ defmodule KristasDogs.Houses.Pet do
     field :profile_image_url, :string
     field :removed_from_website_at, :utc_datetime, default: nil
 
+    field :description, :string
+    field :size, :string
+    field :weight, :string
+    field :altered, :boolean
+    field :details_added_at, :utc_datetime
+
     timestamps(type: :utc_datetime)
   end
 
@@ -24,8 +30,13 @@ defmodule KristasDogs.Houses.Pet do
   @doc false
   def changeset(pet, attrs) do
     pet
-    # |> cast(attrs, [:name, :data_id, :age_text, :gender, :primary_breed, :species, :title, :campus, :location, :details_url, :profile_image_url])
     |> cast(attrs, [:name, :data_id, :age_text, :gender, :primary_breed, :species, :title, :campus, :location, :details_url, :profile_image_url])
     |> validate_required([:name, :data_id, :details_url, :profile_image_url])
+  end
+
+  def changeset_details(pet, attrs) do
+    pet
+    |> cast(attrs, [:description, :size, :weight, :altered, :details_added_at])
+    |> validate_required([:size, :weight, :altered, :details_added_at])
   end
 end

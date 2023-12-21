@@ -200,6 +200,14 @@ defmodule KristasDogs.Houses do
     |> Repo.update()
   end
 
+  def update_pet_details(%Pet{} = pet, attrs) do
+    attrs =
+      attrs |> Map.put(:details_added_at, DateTime.utc_now())
+    pet
+    |> Pet.changeset_details(attrs)
+    |> Repo.update()
+  end
+
   @doc """
   Deletes a pet.
 
