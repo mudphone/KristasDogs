@@ -1,6 +1,7 @@
 alias KristasDogs.{
   Houses,
   Houses.Pet,
+  Repo,
   Scrape,
   Scrape.Details,
   Scrape.Dogs,

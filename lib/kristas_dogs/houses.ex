@@ -26,23 +26,34 @@ defmodule KristasDogs.Houses do
   end
 
   def list_shown_dogs do
+    species = Pet.species(:dog)
     Pet
-    |> where([p], p.species == "dog")
+    |> where([p], p.species == ^species)
     |> order_by([p], [desc: p.inserted_at])
     |> where([p], is_nil(p.removed_from_website_at))
     |> Repo.all()
   end
 
   def list_archived_dogs(page \\ 1) do
+    species = Pet.species(:dog)
     offset = @archive_page_size * (page - 1)
     q =
       from p in Pet,
-        where: p.species == "dog"
+        where: p.species == ^species
            and not is_nil(p.removed_from_website_at),
         order_by: [desc: p.removed_from_website_at],
         limit: @archive_page_size,
         offset: ^offset
     Repo.all(q)
+  end
+
+  def list_dogs_without_details do
+    species = Pet.species(:dog)
+    Pet
+    |> where([p], p.species == ^species)
+    # |> where([p], is_nil(p.removed_from_website_at))
+    |> where([p], is_nil(p.details_added_at))
+    |> Repo.all()
   end
 
   def count_dogs(archived?) do
@@ -197,14 +208,6 @@ defmodule KristasDogs.Houses do
   def update_pet(%Pet{} = pet, attrs) do
     pet
     |> Pet.changeset(attrs)
-    |> Repo.update()
-  end
-
-  def update_pet_details(%Pet{} = pet, attrs) do
-    attrs =
-      attrs |> Map.put(:details_added_at, DateTime.utc_now())
-    pet
-    |> Pet.changeset_details(attrs)
     |> Repo.update()
   end
 

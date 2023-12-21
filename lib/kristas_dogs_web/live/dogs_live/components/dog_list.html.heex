@@ -12,6 +12,8 @@
         <span class="font-bold">
           <span><%= dog.name %></span>
           <span><%= "#{if Houses.is_male?(dog), do: "🕺", else: "💃"}" %></span>
+          <span class="text-sm font-normal"><%= dog.weight %></span>
+          <span><%= size_emoji(dog) %></span>
         </span>
         <span class="text-sm italic">
           <%= if dog.campus do %>

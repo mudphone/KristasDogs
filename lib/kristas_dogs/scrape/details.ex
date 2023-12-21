@@ -1,8 +1,11 @@
 defmodule KristasDogs.Scrape.Details do
   require Logger
 
-  alias KristasDogs.Houses
+  alias KristasDogs.Repo
+
   alias KristasDogs.Houses.Pet
+  alias KristasDogs.PetDetails
+  alias KristasDogs.PetDetails.PetImage
   alias KristasDogs.Scrape.Utils
 
   @detail_url "https://hawaiianhumane.org/adoption-details/"
@@ -10,16 +13,39 @@ defmodule KristasDogs.Scrape.Details do
   def detail_url(animal_id), do: "#{@detail_url}?animalID=#{animal_id}"
 
   def record_details(%Pet{} = pet) do
-    detail_url(pet.data_id)
-    |> get_details()
-    |> process_details(pet)
+    info =
+      detail_url(pet.data_id)
+      |> get_details()
+
+    unless is_nil(info) do
+      process_details(info, pet)
+    end
   end
 
   def process_details(info, %Pet{} = pet) do
     # update pet
-    {:ok, _pet} = Houses.update_pet_details(pet, info)
+    {:ok, pet} = PetDetails.update_pet_details(pet, info)
 
     # add images
+    pet = pet |> Repo.preload([:pet_images])
+    images = Map.get(info, :image_urls, [])
+    pet_images =
+      for url <- images do
+        exists? =
+          Enum.any?(pet.pet_images, fn %PetImage{} = pet_image ->
+            pet_image.url == url
+          end)
+        unless exists? do
+          {:ok, pet_image} =
+            %{url: url, pet_id: pet.id}
+            |> PetDetails.create_pet_image()
+          pet_image
+        else
+          nil
+        end
+      end
+      |> Enum.reject(&is_nil(&1))
+    {pet, pet_images}
   end
 
   def get_body(url) do
@@ -278,6 +304,15 @@ defmodule KristasDogs.Scrape.Details do
         article =
           document
           |> Floki.find("article.animal-details-page")
+        parse_article(article)
+    end
+  end
+
+  def parse_article(article) do
+    case article do
+      [] ->
+        nil
+      _ ->
         %{}
         |> parse_html(article)
     end
@@ -297,13 +332,13 @@ defmodule KristasDogs.Scrape.Details do
     |> Floki.find(selector)
     |> List.first()
     |> Floki.text()
+    |> trim()
   end
 
   def get_description(article_html) do
     article_html
     |> get_text(".description-value")
-    |> String.replace_prefix("\n", "")
-    |> trim()
+    |> replace_prefix("\n", "")
   end
 
   def get_size(article_html) do
@@ -369,5 +404,15 @@ defmodule KristasDogs.Scrape.Details do
 
   def trim(nil), do: nil
   def trim(""), do: nil
-  def trim(s), do: s |> String.trim() |> trim()
+  def trim(s) do
+    s
+    |> String.trim()
+    |> case do
+      "" -> nil
+      other -> other
+    end
+  end
+
+  def replace_prefix(nil, _find, _replace), do: nil
+  def replace_prefix(s, find, replace), do: String.replace_prefix(s, find, replace)
 end

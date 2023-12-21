@@ -2,6 +2,8 @@ defmodule KristasDogs.Houses.Pet do
   use Ecto.Schema
   import Ecto.Changeset
 
+  alias KristasDogs.PetDetails.PetImage
+
   schema "pets" do
     field :name, :string
     field :title, :string
@@ -21,6 +23,8 @@ defmodule KristasDogs.Houses.Pet do
     field :weight, :string
     field :altered, :boolean
     field :details_added_at, :utc_datetime
+
+    has_many :pet_images, PetImage
 
     timestamps(type: :utc_datetime)
   end
