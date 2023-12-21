@@ -44,7 +44,8 @@ defmodule KristasDogs.Houses do
            and not is_nil(p.removed_from_website_at),
         order_by: [desc: p.removed_from_website_at],
         limit: @archive_page_size,
-        offset: ^offset
+        offset: ^offset,
+        preload: [:pet_images]
     Repo.all(q)
   end
 
@@ -125,7 +126,8 @@ defmodule KristasDogs.Houses do
         where: p.species == "dog"
            and not is_nil(p.removed_from_website_at)
            and like(p.name, ^search_term),
-        order_by: [desc: p.inserted_at]
+        order_by: [desc: p.inserted_at],
+        preload: [:pet_images]
     Repo.all(q)
   end
 
