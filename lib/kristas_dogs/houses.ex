@@ -55,6 +55,7 @@ defmodule KristasDogs.Houses do
     q =
       from p in Pet,
       where: p.species == ^species
+          and is_nil(p.removed_from_website_at)
           and is_nil(p.details_added_at)
           and (is_nil(p.details_checked_at)
                or p.details_checked_at <= ^checked_since)
