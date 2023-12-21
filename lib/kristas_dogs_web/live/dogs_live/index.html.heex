@@ -5,7 +5,18 @@
       page_name={:current}
     />
   </div>
-  <div class="pb-8 flex flex-row items-center">
+  <div class="flex flex-row ml-2 mb-6">
+    <div class="mr-2 flex flex-col">
+      <canvas id="dog-spark" width="180" height="26"></canvas>
+      <div class="top-7 -ml-1 text-xs text-orange-400 whitespace-nowrap">
+        30 days ago
+      </div>
+    </div>
+    <div class="relative -top-1 text-xs text-orange-400">
+      <%= @num_dogs %> dogs available
+    </div>
+</div>
+  <div class="flex flex-row items-center">
     <span>
       <form phx-change="search">
         <input type="text" name="dog_name" phx-debounce="500" placeholder="Fuzzy search"
@@ -13,19 +24,8 @@
         />
       </form>
     </span>
-    <span class="ml-4 flex flex-row">
-      <div class="mr-2">
-        <canvas id="dog-spark" width="80" height="26"></canvas>
-      </div>
-      <div class="relative -top-1 text-xs text-orange-400">
-        <%= @num_dogs %> available today
-      </div>
-      <div class="relative -left-48 top-7 -ml-1 text-xs text-orange-400">
-        2 wks ago
-      </div>
-    </span>
   </div>
-  <div>
+  <div class="mt-8">
     <.live_component
       module={DogList} id="dog-list"
       page_name={@page_name}

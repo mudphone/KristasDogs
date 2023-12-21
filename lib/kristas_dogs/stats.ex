@@ -28,7 +28,7 @@ defmodule KristasDogs.Stats do
     two_weeks_ago =
       NaiveDateTime.utc_now()
       |> DateTime.from_naive!("Etc/UTC")
-      |> DateTime.add(-14, :day)
+      |> DateTime.add(-30, :day)
     q =
       from p in PetCount,
         where: p.count_at >= ^two_weeks_ago,
@@ -37,9 +37,6 @@ defmodule KristasDogs.Stats do
       q
       |> Repo.all()
     results
-    # loop through last 14 days (two weeks)
-    # filling gaps
-
   end
 
   @doc """
