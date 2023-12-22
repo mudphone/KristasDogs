@@ -12,7 +12,10 @@ defmodule KristasDogsWeb.DogsLive.Index do
     event_data = %{latest_counts: get_latest_counts()}
     socket =
       socket
-      |> assign(page_name: :current)
+      |> assign(
+        page_name: :current,
+        search_value: ""
+      )
       |> apply_action(socket.assigns.live_action)
       |> push_event("DogsLive.Index.init", event_data)
     {:ok, socket}
@@ -32,7 +35,18 @@ defmodule KristasDogsWeb.DogsLive.Index do
     dogs = Houses.search_shown_dogs(dog_name)
     socket =
       socket
-      |> assign(dogs: dogs)
+      |> assign(
+        dogs: dogs,
+        search_value: dog_name
+      )
+    {:noreply, socket}
+  end
+
+  @impl true
+  def handle_event("clear", _params, socket) do
+    socket =
+      socket
+      |> assign(search_value: "")
     {:noreply, socket}
   end
 
