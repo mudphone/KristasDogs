@@ -8,7 +8,7 @@ defmodule KristasDogs.Houses do
 
   alias KristasDogs.Houses.Pet
 
-  @archive_page_size 30
+  @archive_page_size 100
 
   def archive_page_size, do: @archive_page_size
 
