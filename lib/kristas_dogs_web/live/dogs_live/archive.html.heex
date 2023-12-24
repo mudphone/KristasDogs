@@ -12,8 +12,14 @@
       >
         <input type="text" name="dog_name" phx-debounce="500" placeholder="Fuzzy search"
           class="focus:ring-orange-400 focus:border-orange-400 border-s-zinc-400 rounded"
-          value={@search_term}
+          value={@search_value}
         />
+        <button
+          :if={@search_value != "" and @search_value}
+          id="clear-button"
+          phx-click="clear"
+          class="ml-1 px-2 py-1 font-semibold text-sm bg-slate-400 text-white rounded-lg shadow-sm"
+        >Clear</button>
       </form>
     </span>
   </div>
