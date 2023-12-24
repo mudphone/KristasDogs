@@ -48,6 +48,7 @@ defmodule KristasDogsWeb.DogsLive.Index do
     socket =
       socket
       |> assign(search_value: "")
+      |> apply_action(socket.assigns.live_action)
     {:noreply, socket}
   end
 
