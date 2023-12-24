@@ -23,23 +23,28 @@
       </form>
     </span>
   </div>
-  <div class="pb-8">
-    <.live_component
-      module={Pager} id="top-pager"
-      num_pages={@num_pages} page={@page} dog_count={@dog_count}
-    />
+  <div :if={@num_pages > 0}>
+    <div class="pb-8">
+      <.live_component
+        module={Pager} id="top-pager"
+        num_pages={@num_pages} page={@page} dog_count={@dog_count}
+      />
+    </div>
+    <div>
+      <.live_component
+        module={DogList} id="dog-list"
+        page_name={@page_name}
+        dogs={@dogs}
+      />
+    </div>
+    <div class="pb-8">
+      <.live_component
+        module={Pager} id="bottom-pager"
+        num_pages={@num_pages} page={@page} dog_count={@dog_count}
+      />
+    </div>
   </div>
-  <div>
-    <.live_component
-      module={DogList} id="dog-list"
-      page_name={@page_name}
-      dogs={@dogs}
-    />
-  </div>
-  <div class="pb-8">
-    <.live_component
-      module={Pager} id="bottom-pager"
-      num_pages={@num_pages} page={@page} dog_count={@dog_count}
-    />
+  <div :if={@num_pages == 0}>
+    🦴 No dogs 🦴
   </div>
 </div>

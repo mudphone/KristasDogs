@@ -37,7 +37,8 @@ defmodule KristasDogsWeb.DogsLive.Index do
       socket
       |> assign(
         dogs: dogs,
-        search_value: dog_name
+        search_value: dog_name,
+        dogs_shown: Enum.count(dogs)
       )
     {:noreply, socket}
   end
@@ -51,11 +52,13 @@ defmodule KristasDogsWeb.DogsLive.Index do
   end
 
   defp apply_action(socket, :index) do
+    count = Houses.count_shown_dogs()
     socket
     |> assign(:page_title, "Current")
     |> assign(
       dogs: Houses.list_shown_dogs(),
-      num_dogs: Houses.count_shown_dogs()
+      num_dogs: count,
+      dogs_shown: count
     )
   end
 
