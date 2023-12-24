@@ -53,6 +53,17 @@ defmodule KristasDogsWeb.DogsLive.DogList do
     case String.downcase(size) do
       "small" -> "🤏"
       "large" -> "🙌"
+      "medium" -> ""
+      _ -> ""
+    end
+  end
+
+  defp size_letter(%Pet{size: nil}), do: ""
+  defp size_letter(%Pet{size: size}) do
+    case String.downcase(size) do
+      "small" -> "S"
+      "large" -> "L"
+      "medium" -> "| M"
       _ -> ""
     end
   end
