@@ -8,7 +8,7 @@ defmodule KristasDogs.Houses do
 
   alias KristasDogs.Houses.Pet
 
-  @archive_page_size 100
+  @archive_page_size 30
 
   def archive_page_size, do: @archive_page_size
 
@@ -88,6 +88,19 @@ defmodule KristasDogs.Houses do
     count_dogs(archived?)
   end
 
+  def count_searched_archived_dogs(search_name) do
+    # Note: SQLite `like` is case insensitive by default
+    species = Pet.species(:dog)
+    search_term = "%#{search_name}%"
+    q =
+      from p in Pet,
+        where: p.species == ^species
+            and not is_nil(p.removed_from_website_at)
+            and like(p.name, ^search_term),
+        select: count(p.id)
+    Repo.one(q)
+  end
+
   # Exact match
   # def search_dogs(name, archived?) do
   #   name = String.downcase(name)
@@ -118,16 +131,20 @@ defmodule KristasDogs.Houses do
   end
 
   def search_archived_dogs("", %{page: page}), do: list_archived_dogs(page)
-  def search_archived_dogs(search_name, _) do
+  def search_archived_dogs(search_name, %{page: page}) do
     # Note: SQLite `like` is case insensitive by default
     search_term = "%#{search_name}%"
+    limit = archive_page_size()
+    offset = (page - 1) * limit
     q =
       from p in Pet,
         where: p.species == "dog"
            and not is_nil(p.removed_from_website_at)
            and like(p.name, ^search_term),
         order_by: [desc: p.inserted_at],
-        preload: [:pet_images]
+        preload: [:pet_images],
+        offset: ^offset,
+        limit: ^limit
     Repo.all(q)
   end
 

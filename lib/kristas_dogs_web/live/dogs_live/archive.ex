@@ -41,11 +41,11 @@ defmodule KristasDogsWeb.DogsLive.Archive do
   end
 
   @impl true
-  def handle_event("search", %{"dog_name" => dog_name}, %{assigns: %{page: page}} = socket) do
-    dogs = Houses.search_archived_dogs(dog_name, %{page: page})
+  def handle_event("search", %{"dog_name" => dog_name}, socket) do
     socket =
       socket
-      |> assign(dogs: dogs)
+      |> assign(search_term: dog_name)
+      |> apply_page(1)
     {:noreply, socket}
   end
 
@@ -60,14 +60,26 @@ defmodule KristasDogsWeb.DogsLive.Archive do
   end
 
   defp apply_action(%{assigns: %{page: page}} = socket, :index) do
-    count = Houses.count_archived_dogs()
+    {dogs, count} =
+      case Map.get(socket.assigns, :search_term) do
+        nil ->
+          dogs = Houses.list_archived_dogs(page)
+          count = Houses.count_archived_dogs()
+          {dogs, count}
+        dog_name ->
+          dogs = Houses.search_archived_dogs(dog_name, %{page: page})
+          count = Houses.count_searched_archived_dogs(dog_name)
+          {dogs, count}
+      end
+
     socket
     |> assign(
       page_title: "Archived",
-      dogs: Houses.list_archived_dogs(page),
+      dogs: dogs,
       dog_count: count,
       page: page,
-      num_pages: num_pages(count)
+      num_pages: num_pages(count),
+      search_term: Map.get(socket.assigns, :search_term, nil)
     )
   end
 
