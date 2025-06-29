@@ -15,14 +15,15 @@ function drawDogSpark(counts) {
 
   const { width, height } = canvas.getBoundingClientRect()
   const max = Math.max(...counts.map(c => c.count))
-  const numBars = counts.length
+  const numBars = Math.max(30, counts.length)
   const gapX = 4
   const numGaps = numBars - 1
   const effectiveW = width - (numGaps * gapX)
   const barW = effectiveW / numBars
   let barH = 0
   
-  let x = 0
+  const spacerBars = numBars - counts.length
+  let x = spacerBars * (barW + gapX) // push bars to the right (if not fully loaded)
   let y = 0
   counts.forEach(({count, count_at}) => {
     barH = (count / max) * height

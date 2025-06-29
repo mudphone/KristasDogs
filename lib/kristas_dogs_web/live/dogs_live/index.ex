@@ -1,6 +1,8 @@
 defmodule KristasDogsWeb.DogsLive.Index do
   use KristasDogsWeb, :live_view
 
+  require Logger
+
   alias KristasDogs.Houses
   alias KristasDogs.Stats
   alias KristasDogs.Stats.PetCount
@@ -64,9 +66,17 @@ defmodule KristasDogsWeb.DogsLive.Index do
   end
 
   defp get_latest_counts() do
-    Stats.list_latest_pet_counts()
-    |> Enum.map(fn %PetCount{} = pet_count ->
-      %{count: pet_count.count, count_at: pet_count.count_at}
-    end)
+    counts = Stats.list_latest_pet_counts()
+    unless Enum.empty?(counts) do
+      Logger.warning("counts is: #{inspect counts}")
+      counts
+      |> Enum.map(fn %PetCount{} = pet_count ->
+        %{count: pet_count.count, count_at: pet_count.count_at}
+      end)
+    else
+      Logger.warning("counts is empty, creating...")
+      [%{count: 100, count_at: DateTime.utc_now()}]
+    end
+
   end
 end

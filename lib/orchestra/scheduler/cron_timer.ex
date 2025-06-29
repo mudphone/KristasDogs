@@ -7,7 +7,7 @@ defmodule Orchestra.Scheduler.CronTimer do
   alias KristasDogs.Stats
   alias Orchestra.ProcessRegistry
 
-  @tick_millis :timer.minutes(15)
+  @tick_millis :timer.minutes(30)
   # @tick_millis :timer.seconds(5)
 
   def start_link(worker_id) do

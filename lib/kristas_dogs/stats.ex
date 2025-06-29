@@ -25,13 +25,13 @@ defmodule KristasDogs.Stats do
   end
 
   def list_latest_pet_counts do
-    two_weeks_ago =
+    days_ago =
       NaiveDateTime.utc_now()
       |> DateTime.from_naive!("Etc/UTC")
       |> DateTime.add(-30, :day)
     q =
       from p in PetCount,
-        where: p.count_at >= ^two_weeks_ago,
+        where: p.count_at >= ^days_ago,
         order_by: [asc: p.count_at]
     results =
       q
