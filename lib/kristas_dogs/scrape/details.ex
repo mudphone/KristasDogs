@@ -8,7 +8,7 @@ defmodule KristasDogs.Scrape.Details do
   alias KristasDogs.PetDetails.PetImage
   alias KristasDogs.Scrape.Utils
 
-  @detail_url "https://hawaiianhumane.org/adoption-details/"
+  @detail_url "https://www.hawaiianhumane.org/adoption-details/"
 
   def detail_url(animal_id), do: "#{@detail_url}?animalID=#{animal_id}"
 
@@ -227,7 +227,7 @@ defmodule KristasDogs.Scrape.Details do
   #                ["Dog House Blue", {"br", [], []}, "Mō’ili’ili Campus"]}
   #             ]}
   #          ]},
-  #         {"a", [{"href", "https://hawaiianhumane.org/adoptions/"}],
+  #         {"a", [{"href", "https://www.hawaiianhumane.org/adoptions/"}],
   #          ["Adoption Pricing & Details"]},
   #         {:comment, " Share animal profile "},
   #         {"hr", [{"class", "m-y-3"}], []},
@@ -269,7 +269,7 @@ defmodule KristasDogs.Scrape.Details do
   #       ]},
   #      {:comment, " /Adoption animal details "},
   #      {"script", [{"type", "text/javascript"}],
-  #       ["\n/**\n * 'AddToAny' plugin requirements for sharing, email template, etc.\n * @data-a2a-url (HTML)/@${link} (Email Template) {String} - The URL AddToAny will share.\n * @data-a2a-title (HTML)/@${title} (Email Template) {String} - The Title/Email Subject AddToAny will share.\n */\n\nvar animalModal = document.querySelector('div#animalModal') ? document.querySelector('div#animalModal') : '';\nvar a2aKit = animalModal ? animalModal.querySelector('div.a2a_kit') : document.querySelector('div.a2a_kit');\n\na2aKit.setAttribute(\"data-a2a-url\", \"https://hawaiianhumane.org/adoption-details/?animalID=54614871\");\na2aKit.setAttribute(\"data-a2a-title\", \"'Sammi', a 2 years old Male Terrier, American Pit Bull Dog\");\n\na2a_config.templates.email = {\n  subject: 'Check out this pet: ${title}',\n  body: 'This is Sammi! Sammi was brought to the Hawaiian Humane society as a stray found in Waianae. This handsome boy is very sweet and has great manners. He would make a great first pet for any family looking for a new addition. He can be shy when meeting new people, but will warm up immediately if you&#39;re patient and gentle with him. If you&#39;re interested in meeting this sweet boy, he is located at our Mo&#39;ili&#39;ili campus. Ask an adoptions representative about Sammi today!\\n\\nTo learn more, check out the URL below!\\n\\n${link}'\n};\n\n// feature image viewer\nvar imgViewer = document.querySelector('div#img-viewer');\nvar viewerImages = imgViewer.querySelectorAll('div.img-wrapper');\n\n// add 'click' event listeners to each img-selector image thumbnail that will toggle img-viewer feature image active state\nvar imgThumbnails = document.querySelectorAll('span.img-thumb');\n\n// handle 'active' class toggle\nimgThumbnails.forEach(function(img) {\n  img.addEventListener('click', function(e) {\n    // current 'active' feature image & thumbnail\n    var currentActiveThumbnail = document.querySelector('span.img-thumb.active');\n    var currentActiveFeatureImage = imgViewer.querySelector('div.img-wrapper.active');\n\n    // Regex to search for 'active' pattern\n    var activeStrPattern = new RegExp(\"active\");\n    var active = activeStrPattern.test(img.className);\n\n    if (active) {\n      return;\n    } else {\n      // reset 'active' state of feature image & thumbnail\n      currentActiveThumbnail.classList.remove('active');\n      currentActiveFeatureImage.classList.remove('active');\n\n      // set feature image to selected/clicked thumbnail image\n      viewerImages.forEach(function(viewerImage) {\n        if (viewerImage.dataset.img === img.dataset.img) {\n          img.classList.add('active');\n          viewerImage.classList.add('active');\n        }\n      });\n    }\n  });\n});\n"]},
+  #       ["\n/**\n * 'AddToAny' plugin requirements for sharing, email template, etc.\n * @data-a2a-url (HTML)/@${link} (Email Template) {String} - The URL AddToAny will share.\n * @data-a2a-title (HTML)/@${title} (Email Template) {String} - The Title/Email Subject AddToAny will share.\n */\n\nvar animalModal = document.querySelector('div#animalModal') ? document.querySelector('div#animalModal') : '';\nvar a2aKit = animalModal ? animalModal.querySelector('div.a2a_kit') : document.querySelector('div.a2a_kit');\n\na2aKit.setAttribute(\"data-a2a-url\", \"https://www.hawaiianhumane.org/adoption-details/?animalID=54614871\");\na2aKit.setAttribute(\"data-a2a-title\", \"'Sammi', a 2 years old Male Terrier, American Pit Bull Dog\");\n\na2a_config.templates.email = {\n  subject: 'Check out this pet: ${title}',\n  body: 'This is Sammi! Sammi was brought to the Hawaiian Humane society as a stray found in Waianae. This handsome boy is very sweet and has great manners. He would make a great first pet for any family looking for a new addition. He can be shy when meeting new people, but will warm up immediately if you&#39;re patient and gentle with him. If you&#39;re interested in meeting this sweet boy, he is located at our Mo&#39;ili&#39;ili campus. Ask an adoptions representative about Sammi today!\\n\\nTo learn more, check out the URL below!\\n\\n${link}'\n};\n\n// feature image viewer\nvar imgViewer = document.querySelector('div#img-viewer');\nvar viewerImages = imgViewer.querySelectorAll('div.img-wrapper');\n\n// add 'click' event listeners to each img-selector image thumbnail that will toggle img-viewer feature image active state\nvar imgThumbnails = document.querySelectorAll('span.img-thumb');\n\n// handle 'active' class toggle\nimgThumbnails.forEach(function(img) {\n  img.addEventListener('click', function(e) {\n    // current 'active' feature image & thumbnail\n    var currentActiveThumbnail = document.querySelector('span.img-thumb.active');\n    var currentActiveFeatureImage = imgViewer.querySelector('div.img-wrapper.active');\n\n    // Regex to search for 'active' pattern\n    var activeStrPattern = new RegExp(\"active\");\n    var active = activeStrPattern.test(img.className);\n\n    if (active) {\n      return;\n    } else {\n      // reset 'active' state of feature image & thumbnail\n      currentActiveThumbnail.classList.remove('active');\n      currentActiveFeatureImage.classList.remove('active');\n\n      // set feature image to selected/clicked thumbnail image\n      viewerImages.forEach(function(viewerImage) {\n        if (viewerImage.dataset.img === img.dataset.img) {\n          img.classList.add('active');\n          viewerImage.classList.add('active');\n        }\n      });\n    }\n  });\n});\n"]},
   #      {:comment, " More animals section "},
   #      {:comment, " Grab species label based on ID "},
   #      {"div", [{"class", "grid m-t-3"}],
@@ -288,7 +288,7 @@ defmodule KristasDogs.Scrape.Details do
   #         {"a",
   #          [
   #            {"href",
-  #             "https://hawaiianhumane.org/adoptions/available-animals/?speciesID=1"},
+  #             "https://www.hawaiianhumane.org/adoptions/available-animals/?speciesID=1"},
   #            {"class", "c-1-1 text-center m-b-4"}
   #          ], ["SEE ALL DOG ADOPTIONS >"]}
   #       ]},
