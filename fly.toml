@@ -14,7 +14,7 @@ swap_size_mb = 512
 #  release_command = "/app/bin/migrate"
 
 [env]
-  PHX_HOST = "kristas-dogs.fly.dev"
+  PHX_HOST = "dogs.aquaturds.com"
   PORT = "8080"
   DATABASE_PATH = "/mnt/kristas_dogs_db_vol/kristas_dogs_prod.db"
 

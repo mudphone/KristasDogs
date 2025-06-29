@@ -6,7 +6,11 @@ import Config
 # which you should run after static files are built and
 # before starting your production server.
 config :kristas_dogs, KristasDogsWeb.Endpoint,
-  cache_static_manifest: "priv/static/cache_manifest.json"
+  cache_static_manifest: "priv/static/cache_manifest.json",
+  check_origin: [
+    "https://kristas-dogs.fly.dev",
+    "https://dogs.aquaturds.com"
+  ]
 
 # Configures Swoosh API Client
 config :swoosh, api_client: Swoosh.ApiClient.Finch, finch_name: KristasDogs.Finch
