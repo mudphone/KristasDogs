@@ -67,15 +67,14 @@ defmodule KristasDogsWeb.DogsLive.Index do
 
   defp get_latest_counts() do
     counts = Stats.list_latest_pet_counts()
-    unless Enum.empty?(counts) do
-      Logger.warning("counts is: #{inspect counts}")
+    if Enum.empty?(counts) or Enum.all?(counts, &(&1.count == 0)) do
+      Logger.warning("counts is empty, creating...")
+      [%{count: 100, count_at: DateTime.utc_now()}]
+    else
       counts
       |> Enum.map(fn %PetCount{} = pet_count ->
         %{count: pet_count.count, count_at: pet_count.count_at}
       end)
-    else
-      Logger.warning("counts is empty, creating...")
-      [%{count: 100, count_at: DateTime.utc_now()}]
     end
 
   end
