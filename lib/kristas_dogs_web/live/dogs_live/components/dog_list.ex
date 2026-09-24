@@ -1,5 +1,6 @@
 defmodule KristasDogsWeb.DogsLive.DogList do
   use Phoenix.LiveComponent
+
   use Phoenix.VerifiedRoutes,
     endpoint: KristasDogsWeb.Endpoint,
     router: KristasDogsWeb.Router
@@ -16,6 +17,7 @@ defmodule KristasDogsWeb.DogsLive.DogList do
     {:ok, ago} =
       utc
       |> Timex.format("{relative}", :relative)
+
     ago
     |> String.replace("hour", "hr")
     |> String.replace("minute", "min")
@@ -40,15 +42,18 @@ defmodule KristasDogsWeb.DogsLive.DogList do
     |> Calendar.strftime("%b %-d, %y %Z")
   end
 
-  @pct_new_range_min 60 * 96 # four days in minutes
+  # four days in minutes
+  @pct_new_range_min 60 * 96
   defp pct_new(%Pet{} = pet) do
     mins = Houses.minutes_since_added(pet)
     mins = min(@pct_new_range_min, mins)
+
     ((@pct_new_range_min - mins) * 100)
     |> div(@pct_new_range_min)
   end
 
   defp size_emoji(%Pet{size: nil}), do: ""
+
   defp size_emoji(%Pet{size: size}) do
     case String.downcase(size) do
       "small" -> "🤏"
@@ -59,6 +64,7 @@ defmodule KristasDogsWeb.DogsLive.DogList do
   end
 
   defp size_letter(%Pet{size: nil}), do: ""
+
   defp size_letter(%Pet{size: size}) do
     case String.downcase(size) do
       "small" -> "S"
@@ -66,5 +72,11 @@ defmodule KristasDogsWeb.DogsLive.DogList do
       "medium" -> "| M"
       _ -> ""
     end
+  end
+
+  defp weight_fmt(%Pet{weight: nil}), do: ""
+
+  defp weight_fmt(%Pet{weight: weight} = pet) when is_binary(weight) do
+    Houses.weight_fmt(pet)
   end
 end

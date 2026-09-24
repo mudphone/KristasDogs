@@ -2,10 +2,9 @@ defmodule KristasDogs.Houses do
   @moduledoc """
   The Houses context.
   """
-
   import Ecto.Query, warn: false
-  alias KristasDogs.Repo
 
+  alias KristasDogs.Repo
   alias KristasDogs.Houses.Pet
 
   @archive_page_size 100
@@ -27,9 +26,10 @@ defmodule KristasDogs.Houses do
 
   def list_shown_dogs do
     species = Pet.species(:dog)
+
     Pet
     |> where([p], p.species == ^species)
-    |> order_by([p], [desc: p.inserted_at])
+    |> order_by([p], desc: p.inserted_at)
     |> where([p], is_nil(p.removed_from_website_at))
     |> preload([p], [:pet_images])
     |> Repo.all()
@@ -38,14 +38,17 @@ defmodule KristasDogs.Houses do
   def list_archived_dogs(page \\ 1) do
     species = Pet.species(:dog)
     offset = @archive_page_size * (page - 1)
+
     q =
       from p in Pet,
-        where: p.species == ^species
-           and not is_nil(p.removed_from_website_at),
+        where:
+          p.species == ^species and
+            not is_nil(p.removed_from_website_at),
         order_by: [desc: p.removed_from_website_at],
         limit: @archive_page_size,
         offset: ^offset,
         preload: [:pet_images]
+
     Repo.all(q)
   end
 
@@ -53,14 +56,18 @@ defmodule KristasDogs.Houses do
     checked_since =
       DateTime.utc_now()
       |> DateTime.add(-30, :day)
+
     species = Pet.species(:dog)
+
     q =
       from p in Pet,
-      where: p.species == ^species
-          and is_nil(p.removed_from_website_at)
-          and is_nil(p.details_added_at)
-          and (is_nil(p.details_checked_at)
-               or p.details_checked_at <= ^checked_since)
+        where:
+          p.species == ^species and
+            is_nil(p.removed_from_website_at) and
+            is_nil(p.details_added_at) and
+            (is_nil(p.details_checked_at) or
+               p.details_checked_at <= ^checked_since)
+
     q |> Repo.all()
   end
 
@@ -69,12 +76,14 @@ defmodule KristasDogs.Houses do
       from p in Pet,
         where: p.species == "dog",
         select: count(p.id)
+
     q =
       if archived? do
         q |> where([p], not is_nil(p.removed_from_website_at))
       else
         q |> where([p], is_nil(p.removed_from_website_at))
       end
+
     Repo.one(q)
   end
 
@@ -92,12 +101,15 @@ defmodule KristasDogs.Houses do
     # Note: SQLite `like` is case insensitive by default
     species = Pet.species(:dog)
     search_term = "%#{search_name}%"
+
     q =
       from p in Pet,
-        where: p.species == ^species
-            and not is_nil(p.removed_from_website_at)
-            and like(p.name, ^search_term),
+        where:
+          p.species == ^species and
+            not is_nil(p.removed_from_website_at) and
+            like(p.name, ^search_term),
         select: count(p.id)
+
     Repo.one(q)
   end
 
@@ -120,40 +132,48 @@ defmodule KristasDogs.Houses do
   # end
 
   def search_shown_dogs(""), do: list_shown_dogs()
+
   def search_shown_dogs(search_name) do
     search_name = String.downcase(search_name)
+
     list_shown_dogs()
     |> Enum.filter(fn dog ->
       dog_name = String.downcase(dog.name)
-      String.jaro_distance(dog_name, search_name) >= 0.8
-        or String.starts_with?(dog_name, search_name)
+
+      String.jaro_distance(dog_name, search_name) >= 0.8 or
+        String.starts_with?(dog_name, search_name)
     end)
   end
 
   def search_archived_dogs("", %{page: page}), do: list_archived_dogs(page)
+
   def search_archived_dogs(search_name, %{page: page}) do
     # Note: SQLite `like` is case insensitive by default
     search_term = "%#{search_name}%"
     limit = archive_page_size()
     offset = (page - 1) * limit
+
     q =
       from p in Pet,
-        where: p.species == "dog"
-           and not is_nil(p.removed_from_website_at)
-           and like(p.name, ^search_term),
+        where:
+          p.species == "dog" and
+            not is_nil(p.removed_from_website_at) and
+            like(p.name, ^search_term),
         order_by: [desc: p.inserted_at],
         preload: [:pet_images],
         offset: ^offset,
         limit: ^limit
+
     Repo.all(q)
   end
 
   def update_removed_dogs(seen_ids) do
-    now = DateTime.utc_now
+    now = DateTime.utc_now()
 
     from(p in Pet,
-      where: is_nil(p.removed_from_website_at)
-        and p.id not in ^seen_ids,
+      where:
+        is_nil(p.removed_from_website_at) and
+          p.id not in ^seen_ids,
       update: [set: [removed_from_website_at: ^now]]
     )
     |> Repo.update_all([])
@@ -161,8 +181,9 @@ defmodule KristasDogs.Houses do
 
   def unremove_dog(pet_id) do
     from(p in Pet,
-      where: not is_nil(p.removed_from_website_at)
-        and p.id == ^pet_id,
+      where:
+        not is_nil(p.removed_from_website_at) and
+          p.id == ^pet_id,
       update: [set: [removed_from_website_at: nil]]
     )
     |> Repo.update_all([])
@@ -191,10 +212,12 @@ defmodule KristasDogs.Houses do
   def get_pet!(id), do: Repo.get!(Pet, id)
 
   def get_pet_by_data_id(data_id) when is_nil(data_id), do: nil
+
   def get_pet_by_data_id(data_id) do
     q =
       from p in Pet,
         where: p.data_id == ^data_id
+
     Repo.one(q)
   end
 
@@ -214,6 +237,7 @@ defmodule KristasDogs.Houses do
     attrs =
       attrs
       |> Map.update(:species, nil, &String.downcase(&1))
+
     %Pet{}
     |> Pet.changeset(attrs)
     |> Repo.insert()
@@ -272,5 +296,29 @@ defmodule KristasDogs.Houses do
   def minutes_since_added(%Pet{inserted_at: inserted_at}) do
     now = DateTime.utc_now()
     DateTime.diff(now, inserted_at, :minute)
+  end
+
+  def weight_pounds(weight_str) when is_binary(weight_str) do
+    if String.contains?(weight_str, "pounds") do
+      {f, _binary} =
+        String.replace(weight_str, " pounds", "")
+        |> Float.parse()
+
+      f
+    else
+      :error
+    end
+  end
+
+  def weight_fmt(%Pet{weight: nil}), do: nil
+
+  def weight_fmt(%Pet{weight: weight_str}) when is_binary(weight_str) do
+    case weight_pounds(weight_str) do
+      :error ->
+        weight_str
+
+      pounds ->
+        "#{Float.round(pounds, 1)} pounds"
+    end
   end
 end
