@@ -43,7 +43,7 @@ defmodule KristasDogsWeb do
         layouts: [html: KristasDogsWeb.Layouts]
 
       import Plug.Conn
-      import KristasDogsWeb.Gettext
+      use Gettext, backend: KristasDogsWeb.Gettext
 
       unquote(verified_routes())
     end
@@ -85,7 +85,7 @@ defmodule KristasDogsWeb do
       import Phoenix.HTML
       # Core UI components and translation
       import KristasDogsWeb.CoreComponents
-      import KristasDogsWeb.Gettext
+      use Gettext, backend: KristasDogsWeb.Gettext
 
       # Shortcut for generating JS commands
       alias Phoenix.LiveView.JS

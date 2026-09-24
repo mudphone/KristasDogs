@@ -20,5 +20,5 @@ defmodule KristasDogsWeb.Gettext do
 
   See the [Gettext Docs](https://hexdocs.pm/gettext) for detailed usage.
   """
-  use Gettext, otp_app: :kristas_dogs
+  use Gettext.Backend, otp_app: :kristas_dogs
 end

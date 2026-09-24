@@ -17,7 +17,7 @@ defmodule KristasDogsWeb.CoreComponents do
   use Phoenix.Component
 
   alias Phoenix.LiveView.JS
-  import KristasDogsWeb.Gettext
+  use Gettext, backend: KristasDogsWeb.Gettext
 
   @doc """
   Renders a modal.
