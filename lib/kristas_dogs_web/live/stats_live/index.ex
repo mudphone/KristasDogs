@@ -15,7 +15,7 @@ defmodule KristasDogsWeb.StatsLive.Index do
     socket =
       socket
       |> assign(page_name: :stats, page_title: "Stats")
-      |> assign(breed_chart: ChartGeometry.beeswarm_layout(DogStats.breed_groups(), reference_days))
+      |> assign(breed_chart: ChartGeometry.beeswarm_layout(DogStats.breed_groups(), reference_days, plot_bottom: 200))
       |> assign(size_chart: ChartGeometry.beeswarm_layout(DogStats.size_groups(), reference_days))
       |> assign(gender_chart: ChartGeometry.beeswarm_layout(DogStats.gender_groups(), reference_days))
       |> assign(age_chart: ChartGeometry.scatter_layout(DogStats.age_points(), reference_days))

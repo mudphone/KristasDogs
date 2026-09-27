@@ -31,23 +31,20 @@ defmodule KristasDogs.Houses.PetNormalization do
 
   @doc """
   Parses age_text (e.g. "2 years old", "6 months old") into a whole
-  number of months. Returns nil for blank/missing text, unparseable text,
-  or the known-bad "125 years old" outlier value.
+  number of months. Returns nil for blank/missing text, unparseable
+  text, or an implausible age (420 months / 35 years or more) -- real
+  dogs never get anywhere near that old, so a value like "125 years
+  old" or "126 years old" is bad scraped data, not a real age.
   """
   def normalize_age_months(nil), do: nil
   def normalize_age_months(""), do: nil
-  def normalize_age_months("125 years old"), do: nil
 
   def normalize_age_months(age_text) do
     case Regex.run(~r/^(\d+)\s+(year|years|month|months)\s+old$/, String.trim(age_text)) do
       [_, num_str, unit] ->
         num = String.to_integer(num_str)
-
-        if String.starts_with?(unit, "year") do
-          num * 12
-        else
-          num
-        end
+        months = if String.starts_with?(unit, "year"), do: num * 12, else: num
+        if months >= 420, do: nil, else: months
 
       nil ->
         nil

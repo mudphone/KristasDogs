@@ -15,6 +15,7 @@ defmodule KristasDogs.DogStats do
   # scraper timing was unreliable and older dogs' timestamps aren't
   # trustworthy for duration math.
   @data_quality_cutoff ~U[2025-06-30 01:12:49Z]
+  @size_order %{"Small" => 0, "Medium" => 1, "Large" => 2, "Extra-Large" => 3}
 
   @doc """
   The shelter-wide median days-to-adoption across all adopted dogs (dogs
@@ -39,6 +40,7 @@ defmodule KristasDogs.DogStats do
     |> select([p], {p.normal_primary_breed, p.id, p.name, p.inserted_at, p.removed_from_website_at})
     |> Repo.all()
     |> group_by_category()
+    |> Enum.sort_by(& &1.median_days)
   end
 
   @doc """
@@ -51,6 +53,7 @@ defmodule KristasDogs.DogStats do
     |> select([p], {p.size, p.id, p.name, p.inserted_at, p.removed_from_website_at})
     |> Repo.all()
     |> group_by_category()
+    |> Enum.sort_by(&Map.get(@size_order, &1.category, 999))
   end
 
   @doc """
@@ -62,6 +65,7 @@ defmodule KristasDogs.DogStats do
     |> select([p], {p.gender, p.id, p.name, p.inserted_at, p.removed_from_website_at})
     |> Repo.all()
     |> group_by_category()
+    |> Enum.sort_by(& &1.median_days)
   end
 
   @doc """
@@ -138,6 +142,5 @@ defmodule KristasDogs.DogStats do
         dogs: dogs
       }
     end)
-    |> Enum.sort_by(& &1.median_days)
   end
 end

@@ -10,8 +10,39 @@ defmodule KristasDogsWeb.StatsLive.ChartGeometryTest do
                height: 400,
                columns: [],
                dots: [],
-               reference_y: nil
+               reference_y: nil,
+               reference_days: nil,
+               plot_left: 50,
+               axis_center_y: 200.0,
+               y_ticks: []
              }
+    end
+
+    test "uses wider columns when there are few groups, floors at 60px for many" do
+      few_groups = [
+        %{category: "Male", n: 1, median_days: 5.0, dogs: [%{id: 1, name: "A", days: 5}]},
+        %{category: "Female", n: 1, median_days: 5.0, dogs: [%{id: 2, name: "B", days: 5}]}
+      ]
+
+      many_groups = for i <- 1..50, do: %{category: "Breed#{i}", n: 1, median_days: 5.0, dogs: [%{id: i, name: "Dog#{i}", days: 5}]}
+
+      few_layout = ChartGeometry.beeswarm_layout(few_groups, nil)
+      many_layout = ChartGeometry.beeswarm_layout(many_groups, nil)
+
+      # width now also includes the fixed 50px left margin reserved for the
+      # Y-axis, so subtract it before recovering the per-group column width.
+      assert div(few_layout.width - 50, 2) > 400
+      assert div(many_layout.width - 50, 50) == 60
+    end
+
+    test "plot_bottom option increases total chart height without changing dot positions" do
+      groups = [%{category: "Beagle", n: 1, median_days: 5.0, dogs: [%{id: 1, name: "Fido", days: 5}]}]
+
+      default_layout = ChartGeometry.beeswarm_layout(groups, nil)
+      tall_layout = ChartGeometry.beeswarm_layout(groups, nil, plot_bottom: 200)
+
+      assert tall_layout.height == default_layout.height + 180
+      assert hd(tall_layout.dots).y == hd(default_layout.dots).y
     end
 
     test "places one column per group, in the given order, each dot within its column" do
@@ -27,7 +58,9 @@ defmodule KristasDogsWeb.StatsLive.ChartGeometryTest do
 
       layout = ChartGeometry.beeswarm_layout(groups, 10.0)
 
-      assert layout.width == 2 * 60
+      # Column width is adaptive: 2 groups get max(60, 900/2) = 450px columns,
+      # plus the 50px left margin reserved for the Y-axis.
+      assert layout.width == 2 * 450 + 50
       assert [%{category: "Beagle", x: beagle_x}, %{category: "Terrier", x: terrier_x}] = layout.columns
       assert beagle_x < terrier_x
       assert length(layout.dots) == 3
@@ -101,22 +134,60 @@ defmodule KristasDogsWeb.StatsLive.ChartGeometryTest do
 
     test "keeps every dot within its column's bounds even with hundreds of dogs sharing similar days values" do
       dogs = for i <- 1..500, do: %{id: i, name: "Dog#{i}", days: rem(i, 30)}
-      groups = [%{category: "Terrier", n: 500, median_days: 15.0, dogs: dogs}]
+      other_groups = for i <- 1..89, do: %{category: "Other#{i}", n: 1, median_days: 5.0, dogs: [%{id: 1000 + i, name: "X#{i}", days: 5}]}
+      groups = [%{category: "Terrier", n: 500, median_days: 15.0, dogs: dogs} | other_groups]
+
+      layout = ChartGeometry.beeswarm_layout(groups, nil)
+
+      terrier_column = Enum.find(layout.columns, &(&1.category == "Terrier"))
+      terrier_dots = Enum.filter(layout.dots, &(&1.category == "Terrier"))
+      assert length(terrier_dots) == 500
+
+      Enum.each(terrier_dots, fn dot ->
+        assert_in_delta dot.x, terrier_column.x, 30
+      end)
+    end
+
+    test "spreads dots wider within wider columns instead of a fixed pixel amount" do
+      # All 200 dogs share the exact same days value, so they land in one
+      # y-band together. That's needed to actually saturate the jitter
+      # spread toward the column's full magnitude instead of being capped
+      # by the flat per-dot @jitter_step.
+      dogs = for i <- 1..200, do: %{id: i, name: "Dog#{i}", days: 5}
+      groups = [%{category: "Male", n: 200, median_days: 5.0, dogs: dogs}]
 
       layout = ChartGeometry.beeswarm_layout(groups, nil)
 
       column_x = hd(layout.columns).x
-      assert length(layout.dots) == 500
+      max_offset = layout.dots |> Enum.map(&abs(&1.x - column_x)) |> Enum.max()
 
-      Enum.each(layout.dots, fn dot ->
-        assert_in_delta dot.x, column_x, 30
-      end)
+      # Single group -> column_width = max(60, 900/1) = 900, so the spread
+      # should use much more than the old fixed 25px cap.
+      assert max_offset > 100
+    end
+
+    test "y_ticks only includes candidate values within the actual days range" do
+      groups = [%{category: "Beagle", n: 2, median_days: 20.0, dogs: [%{id: 1, name: "A", days: 5}, %{id: 2, name: "B", days: 40}]}]
+
+      layout = ChartGeometry.beeswarm_layout(groups, nil)
+
+      labels = Enum.map(layout.y_ticks, & &1.label)
+      assert labels == ["7d", "30d"]
     end
   end
 
   describe "scatter_layout/2" do
     test "returns an empty layout for no points" do
-      assert ChartGeometry.scatter_layout([], nil) == %{width: 600, height: 400, dots: [], reference_y: nil}
+      assert ChartGeometry.scatter_layout([], nil) == %{
+               width: 600,
+               height: 400,
+               dots: [],
+               reference_y: nil,
+               reference_days: nil,
+               plot_left: 50,
+               axis_center_y: 200.0,
+               y_ticks: []
+             }
     end
 
     test "places one dot per point, carrying id/name, and computes a reference line" do

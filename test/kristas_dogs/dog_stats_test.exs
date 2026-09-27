@@ -118,6 +118,35 @@ defmodule KristasDogs.DogStatsTest do
       assert id == dog.id
       assert name == dog.name
     end
+
+    test "orders by Small, Medium, Large, Extra-Large regardless of median days" do
+      adopted_dog_fixture(%{
+        size: "Large",
+        inserted_at: ~U[2025-07-01 00:00:00Z],
+        removed_from_website_at: ~U[2025-07-02 00:00:00Z]
+      })
+
+      adopted_dog_fixture(%{
+        size: "Small",
+        inserted_at: ~U[2025-07-01 00:00:00Z],
+        removed_from_website_at: ~U[2025-08-01 00:00:00Z]
+      })
+
+      adopted_dog_fixture(%{
+        size: "Extra-Large",
+        inserted_at: ~U[2025-07-01 00:00:00Z],
+        removed_from_website_at: ~U[2025-07-15 00:00:00Z]
+      })
+
+      adopted_dog_fixture(%{
+        size: "Medium",
+        inserted_at: ~U[2025-07-01 00:00:00Z],
+        removed_from_website_at: ~U[2025-07-10 00:00:00Z]
+      })
+
+      categories = DogStats.size_groups() |> Enum.map(& &1.category)
+      assert categories == ["Small", "Medium", "Large", "Extra-Large"]
+    end
   end
 
   describe "gender_groups/0" do

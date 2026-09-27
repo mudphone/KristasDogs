@@ -47,8 +47,14 @@ defmodule KristasDogs.Houses.PetNormalizationTest do
       assert PetNormalization.normalize_age_months("11 months old") == 11
     end
 
-    test "returns nil for the known-bad 125 years old outlier" do
+    test "returns nil for implausibly old ages (420 months / 35 years or more)" do
       assert PetNormalization.normalize_age_months("125 years old") == nil
+      assert PetNormalization.normalize_age_months("126 years old") == nil
+      assert PetNormalization.normalize_age_months("35 years old") == nil
+    end
+
+    test "keeps ages just under the implausibility threshold" do
+      assert PetNormalization.normalize_age_months("34 years old") == 408
     end
 
     test "returns nil for blank, missing, or unparseable text" do

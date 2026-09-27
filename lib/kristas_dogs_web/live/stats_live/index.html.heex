@@ -8,30 +8,30 @@
 
   <h1 class="text-xl font-semibold mt-2 mb-4">Adoption Time Stats</h1>
 
-  <section class="mb-8">
+  <section class="mb-8 rounded-lg bg-zinc-50 p-4 ring-1 ring-zinc-200">
     <h2 class="font-semibold mb-2">By Breed</h2>
     <div class="overflow-x-auto">
-      <.beeswarm_chart chart={@breed_chart} x_label="Breed" />
+      <.beeswarm_chart chart={@breed_chart} x_label="Breed" vertical_labels={true} />
     </div>
   </section>
 
-  <section class="mb-8">
+  <section class="mb-8 rounded-lg bg-zinc-50 p-4 ring-1 ring-zinc-200">
     <h2 class="font-semibold mb-2">By Size</h2>
-    <.beeswarm_chart chart={@size_chart} x_label="Size" />
+    <.beeswarm_chart chart={@size_chart} x_label="Size" responsive={true} />
   </section>
 
-  <section class="mb-8">
+  <section class="mb-8 rounded-lg bg-zinc-50 p-4 ring-1 ring-zinc-200">
     <h2 class="font-semibold mb-2">By Gender</h2>
-    <.beeswarm_chart chart={@gender_chart} x_label="Gender" />
+    <.beeswarm_chart chart={@gender_chart} x_label="Gender" responsive={true} />
   </section>
 
-  <section class="mb-8">
+  <section class="mb-8 rounded-lg bg-zinc-50 p-4 ring-1 ring-zinc-200">
     <h2 class="font-semibold mb-2">By Age (months)</h2>
-    <.scatter_chart chart={@age_chart} x_label="Age (months)" />
+    <.scatter_chart chart={@age_chart} x_label="Age" value_format={:age_months} responsive={true} />
   </section>
 
-  <section class="mb-8">
+  <section class="mb-8 rounded-lg bg-zinc-50 p-4 ring-1 ring-zinc-200">
     <h2 class="font-semibold mb-2">By Weight (lbs)</h2>
-    <.scatter_chart chart={@weight_chart} x_label="Weight (lbs)" />
+    <.scatter_chart chart={@weight_chart} x_label="Weight (lbs)" responsive={true} />
   </section>
 </div>
