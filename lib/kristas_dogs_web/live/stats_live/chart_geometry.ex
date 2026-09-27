@@ -125,8 +125,18 @@ defmodule KristasDogsWeb.StatsLive.ChartGeometry do
   `KristasDogs.DogStats.age_points/0` / `.weight_points/0`), plus the
   shelter-wide overall median days-to-adoption (for the reference line,
   or nil to omit it).
+
+  Options:
+  - `:x_tick_candidates` - a list of "nice" round values (in the same
+    unit as `value`, e.g. months for age or lbs for weight) to consider
+    as X-axis ticks. Only the ones that actually fall within the data's
+    own value range are shown. Defaults to `[]` (no X-axis ticks).
+  - `:x_tick_label` - a function from tick value to display label.
+    Defaults to truncating the value to a whole number string.
   """
-  def scatter_layout([], _reference_days) do
+  def scatter_layout(points, reference_days, opts \\ [])
+
+  def scatter_layout([], _reference_days, _opts) do
     %{
       width: @scatter_width,
       height: @plot_top + @usable_height + @default_plot_bottom,
@@ -135,11 +145,16 @@ defmodule KristasDogsWeb.StatsLive.ChartGeometry do
       reference_days: nil,
       plot_left: @plot_left,
       axis_center_y: axis_center_y(),
-      y_ticks: []
+      y_ticks: [],
+      x_axis_y: @plot_top + @usable_height,
+      x_ticks: []
     }
   end
 
-  def scatter_layout(points, reference_days) do
+  def scatter_layout(points, reference_days, opts) do
+    x_tick_candidates = Keyword.get(opts, :x_tick_candidates, [])
+    x_tick_label = Keyword.get(opts, :x_tick_label, &default_x_tick_label/1)
+
     days_values = points |> Enum.map(& &1.days) |> maybe_include(reference_days)
     {min_days, max_days} = Enum.min_max(days_values)
 
@@ -166,7 +181,9 @@ defmodule KristasDogsWeb.StatsLive.ChartGeometry do
       reference_days: reference_days,
       plot_left: @plot_left,
       axis_center_y: axis_center_y(),
-      y_ticks: y_ticks(min_days, max_days)
+      y_ticks: y_ticks(min_days, max_days),
+      x_axis_y: @plot_top + @usable_height,
+      x_ticks: x_ticks(min_x, max_x, x_tick_candidates, x_tick_label)
     }
   end
 
@@ -184,6 +201,14 @@ defmodule KristasDogsWeb.StatsLive.ChartGeometry do
     |> Enum.filter(&(&1 >= min_days and &1 <= max_days))
     |> Enum.map(fn days -> %{y: scale_days_to_y(days, min_days, max_days), label: "#{days}d"} end)
   end
+
+  defp x_ticks(min_x, max_x, candidates, label_fn) do
+    candidates
+    |> Enum.filter(&(&1 >= min_x and &1 <= max_x))
+    |> Enum.map(fn value -> %{x: scale_value_to_x(value, min_x, max_x), label: label_fn.(value)} end)
+  end
+
+  defp default_x_tick_label(value), do: "#{trunc(value)}"
 
   defp axis_center_y do
     @plot_top + @usable_height / 2

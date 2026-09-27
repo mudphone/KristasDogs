@@ -55,6 +55,10 @@ defmodule KristasDogsWeb.StatsLive.Components.ScatterChart do
         font-size="9"
         fill="#94a3b8"
       >Days to Adoption</text>
+      <g :for={tick <- @chart.x_ticks}>
+        <line x1={tick.x} x2={tick.x} y1={@chart.x_axis_y} y2={@chart.x_axis_y + 6} stroke="#94a3b8" stroke-width="1" />
+        <text x={tick.x} y={@chart.x_axis_y + 16} text-anchor="middle" font-size="9" fill="#94a3b8">{tick.label}</text>
+      </g>
       <line
         :if={@chart.reference_y}
         x1="0"

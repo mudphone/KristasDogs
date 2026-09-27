@@ -186,8 +186,36 @@ defmodule KristasDogsWeb.StatsLive.ChartGeometryTest do
                reference_days: nil,
                plot_left: 50,
                axis_center_y: 200.0,
-               y_ticks: []
+               y_ticks: [],
+               x_axis_y: 380,
+               x_ticks: []
              }
+    end
+
+    test "x_ticks only includes candidate values within the actual value range" do
+      points = [%{id: 1, name: "A", value: 5, days: 10}, %{id: 2, name: "B", value: 50, days: 20}]
+
+      layout = ChartGeometry.scatter_layout(points, nil, x_tick_candidates: [0, 10, 25, 50, 75, 100])
+
+      labels = Enum.map(layout.x_ticks, & &1.label)
+      assert labels == ["10", "25", "50"]
+    end
+
+    test "x_tick_label option overrides the default label formatting" do
+      points = [%{id: 1, name: "A", value: 0, days: 10}, %{id: 2, name: "B", value: 120, days: 20}]
+
+      label_fn = fn months when months <= 12 -> "#{trunc(months)}m"
+                   months -> "#{round(months / 12)}y"
+                 end
+
+      layout =
+        ChartGeometry.scatter_layout(points, nil,
+          x_tick_candidates: [0, 6, 12, 24, 60, 120],
+          x_tick_label: label_fn
+        )
+
+      labels = Enum.map(layout.x_ticks, & &1.label)
+      assert labels == ["0m", "6m", "12m", "2y", "5y", "10y"]
     end
 
     test "places one dot per point, carrying id/name, and computes a reference line" do
