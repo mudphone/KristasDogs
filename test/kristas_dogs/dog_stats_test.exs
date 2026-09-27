@@ -26,13 +26,13 @@ defmodule KristasDogs.DogStatsTest do
 
     test "computes the median days-to-adoption across all adopted dogs" do
       adopted_dog_fixture(%{
-        inserted_at: ~U[2024-01-01 00:00:00Z],
-        removed_from_website_at: ~U[2024-01-06 00:00:00Z]
+        inserted_at: ~U[2025-07-01 00:00:00Z],
+        removed_from_website_at: ~U[2025-07-06 00:00:00Z]
       })
 
       adopted_dog_fixture(%{
-        inserted_at: ~U[2024-01-01 00:00:00Z],
-        removed_from_website_at: ~U[2024-01-21 00:00:00Z]
+        inserted_at: ~U[2025-07-01 00:00:00Z],
+        removed_from_website_at: ~U[2025-07-21 00:00:00Z]
       })
 
       assert DogStats.overall_median_days() == 12.5
@@ -40,13 +40,27 @@ defmodule KristasDogs.DogStatsTest do
 
     test "excludes dogs still listed (no removed_from_website_at)" do
       adopted_dog_fixture(%{
-        inserted_at: ~U[2024-01-01 00:00:00Z],
-        removed_from_website_at: ~U[2024-01-06 00:00:00Z]
+        inserted_at: ~U[2025-07-01 00:00:00Z],
+        removed_from_website_at: ~U[2025-07-06 00:00:00Z]
       })
 
       adopted_dog_fixture(%{
-        inserted_at: ~U[2024-01-01 00:00:00Z],
+        inserted_at: ~U[2025-07-01 00:00:00Z],
         removed_from_website_at: nil
+      })
+
+      assert DogStats.overall_median_days() == 5.0
+    end
+
+    test "excludes dogs inserted before the data-quality cutoff" do
+      adopted_dog_fixture(%{
+        inserted_at: ~U[2025-06-30 01:12:49Z],
+        removed_from_website_at: ~U[2025-07-05 01:12:49Z]
+      })
+
+      adopted_dog_fixture(%{
+        inserted_at: ~U[2025-06-29 00:00:00Z],
+        removed_from_website_at: ~U[2025-08-28 00:00:00Z]
       })
 
       assert DogStats.overall_median_days() == 5.0
@@ -58,15 +72,15 @@ defmodule KristasDogs.DogStatsTest do
       terrier =
         adopted_dog_fixture(%{
           normal_primary_breed: "Terrier",
-          inserted_at: ~U[2024-01-01 00:00:00Z],
-          removed_from_website_at: ~U[2024-01-21 00:00:00Z]
+          inserted_at: ~U[2025-07-01 00:00:00Z],
+          removed_from_website_at: ~U[2025-07-21 00:00:00Z]
         })
 
       beagle =
         adopted_dog_fixture(%{
           normal_primary_breed: "Beagle",
-          inserted_at: ~U[2024-01-01 00:00:00Z],
-          removed_from_website_at: ~U[2024-01-06 00:00:00Z]
+          inserted_at: ~U[2025-07-01 00:00:00Z],
+          removed_from_website_at: ~U[2025-07-06 00:00:00Z]
         })
 
       assert [
@@ -92,8 +106,8 @@ defmodule KristasDogs.DogStatsTest do
       dog =
         adopted_dog_fixture(%{
           size: "Small",
-          inserted_at: ~U[2024-01-01 00:00:00Z],
-          removed_from_website_at: ~U[2024-01-06 00:00:00Z]
+          inserted_at: ~U[2025-07-01 00:00:00Z],
+          removed_from_website_at: ~U[2025-07-06 00:00:00Z]
         })
 
       adopted_dog_fixture(%{size: ""})
@@ -111,8 +125,8 @@ defmodule KristasDogs.DogStatsTest do
       dog =
         adopted_dog_fixture(%{
           gender: "Female",
-          inserted_at: ~U[2024-01-01 00:00:00Z],
-          removed_from_website_at: ~U[2024-01-06 00:00:00Z]
+          inserted_at: ~U[2025-07-01 00:00:00Z],
+          removed_from_website_at: ~U[2025-07-06 00:00:00Z]
         })
 
       assert [%{category: "Female", n: 1, median_days: 5.0, dogs: [%{id: id, name: name, days: 5}]}] =
@@ -128,8 +142,8 @@ defmodule KristasDogs.DogStatsTest do
       dog =
         adopted_dog_fixture(%{
           normal_age_months: 24,
-          inserted_at: ~U[2024-01-01 00:00:00Z],
-          removed_from_website_at: ~U[2024-01-06 00:00:00Z]
+          inserted_at: ~U[2025-07-01 00:00:00Z],
+          removed_from_website_at: ~U[2025-07-06 00:00:00Z]
         })
 
       adopted_dog_fixture(%{normal_age_months: nil})
@@ -145,8 +159,8 @@ defmodule KristasDogs.DogStatsTest do
       dog =
         adopted_dog_fixture(%{
           normal_weight_lbs: 40.0,
-          inserted_at: ~U[2024-01-01 00:00:00Z],
-          removed_from_website_at: ~U[2024-01-06 00:00:00Z]
+          inserted_at: ~U[2025-07-01 00:00:00Z],
+          removed_from_website_at: ~U[2025-07-06 00:00:00Z]
         })
 
       adopted_dog_fixture(%{normal_weight_lbs: nil})

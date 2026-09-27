@@ -59,6 +59,38 @@ defmodule KristasDogsWeb.StatsLive.ChartGeometryTest do
       assert dot_for_25_days.y < dot_for_5_days.y
     end
 
+    test "compresses large days values relative to small ones, proving a log (not linear) scale" do
+      groups = [
+        %{
+          category: "Wide range",
+          n: 4,
+          median_days: 50.0,
+          dogs: [
+            %{id: 1, name: "A", days: 1},
+            %{id: 2, name: "B", days: 11},
+            %{id: 3, name: "C", days: 500},
+            %{id: 4, name: "D", days: 510}
+          ]
+        }
+      ]
+
+      layout = ChartGeometry.beeswarm_layout(groups, nil)
+
+      dot_a = Enum.find(layout.dots, &(&1.id == 1))
+      dot_b = Enum.find(layout.dots, &(&1.id == 2))
+      dot_c = Enum.find(layout.dots, &(&1.id == 3))
+      dot_d = Enum.find(layout.dots, &(&1.id == 4))
+
+      gap_low = abs(dot_a.y - dot_b.y)
+      gap_high = abs(dot_c.y - dot_d.y)
+
+      # Both gaps span exactly 10 raw days, but on a log scale the gap
+      # between 1 and 11 days is much larger in pixels than the gap
+      # between 500 and 510 days -- a linear scale would make these two
+      # gaps identical.
+      assert gap_low > gap_high * 5
+    end
+
     test "keeps every dot within its column's bounds even with hundreds of dogs sharing similar days values" do
       dogs = for i <- 1..500, do: %{id: i, name: "Dog#{i}", days: rem(i, 30)}
       groups = [%{category: "Terrier", n: 500, median_days: 15.0, dogs: dogs}]

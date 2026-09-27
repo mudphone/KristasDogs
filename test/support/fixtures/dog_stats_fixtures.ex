@@ -24,9 +24,9 @@ defmodule KristasDogs.DogStatsFixtures do
       normal_age_months: 24,
       weight: "40 lbs",
       normal_weight_lbs: 40.0,
-      inserted_at: ~U[2024-01-01 00:00:00Z],
-      updated_at: ~U[2024-01-01 00:00:00Z],
-      removed_from_website_at: ~U[2024-01-11 00:00:00Z]
+      inserted_at: ~U[2025-07-01 00:00:00Z],
+      updated_at: ~U[2025-07-01 00:00:00Z],
+      removed_from_website_at: ~U[2025-07-11 00:00:00Z]
     }
 
     attrs = Map.merge(defaults, Map.new(attrs))

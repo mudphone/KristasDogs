@@ -11,6 +11,11 @@ defmodule KristasDogs.DogStats do
   alias KristasDogs.Repo
   alias KristasDogs.Houses.Pet
 
+  # Before this cutoff, Fly.io could scale the app to zero when idle, so
+  # scraper timing was unreliable and older dogs' timestamps aren't
+  # trustworthy for duration math.
+  @data_quality_cutoff ~U[2025-06-30 01:12:49Z]
+
   @doc """
   The shelter-wide median days-to-adoption across all adopted dogs (dogs
   with a non-nil removed_from_website_at). Returns nil if there are none.
@@ -80,7 +85,9 @@ defmodule KristasDogs.DogStats do
     species = Pet.species(:dog)
 
     from p in Pet,
-      where: p.species == ^species and not is_nil(p.removed_from_website_at)
+      where:
+        p.species == ^species and not is_nil(p.removed_from_website_at) and
+          p.inserted_at >= ^@data_quality_cutoff
   end
 
   defp days_between(inserted_at, removed_at) do

@@ -129,7 +129,12 @@ defmodule KristasDogsWeb.StatsLive.ChartGeometry do
 
   defp scale_days_to_y(days, min_days, max_days) do
     usable_height = @plot_height - @plot_top - @plot_bottom
-    ratio = (days - min_days) / (max_days - min_days)
+    # Log scale: adoption times are right-skewed with a long tail, so a
+    # linear scale squeezes most dots into a sliver. +1 keeps 0 defined.
+    log_days = :math.log(days + 1)
+    log_min = :math.log(min_days + 1)
+    log_max = :math.log(max_days + 1)
+    ratio = (log_days - log_min) / (log_max - log_min)
     # Standard axis convention: the value increases upward, so a larger
     # days value gets a smaller SVG y-pixel (nearer the top of the chart).
     @plot_top + (1 - ratio) * usable_height
