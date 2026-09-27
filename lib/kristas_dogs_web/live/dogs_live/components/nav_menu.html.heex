@@ -1,11 +1,17 @@
 <span>
   <%= if @page_name == :current do %>
-    <span class="font-semibold underline underline-offset-2 pr-2">
-      Current</span>
-    <a href={~p"/archive"} class="text-sky-500 hover:text-sky-700 pr-2">Archive</a>
+    <span class="font-semibold underline underline-offset-2 pr-2">Current</span>
   <% else %>
     <a href={~p"/"} class="text-sky-500 hover:text-sky-700 pr-2">Current</a>
-    <span class="font-semibold underline underline-offset-2"
-    >Archive</span>
+  <% end %>
+  <%= if @page_name == :archive do %>
+    <span class="font-semibold underline underline-offset-2 pr-2">Archive</span>
+  <% else %>
+    <a href={~p"/archive"} class="text-sky-500 hover:text-sky-700 pr-2">Archive</a>
+  <% end %>
+  <%= if @page_name == :stats do %>
+    <span class="font-semibold underline underline-offset-2">Stats</span>
+  <% else %>
+    <a href={~p"/stats"} class="text-sky-500 hover:text-sky-700">Stats</a>
   <% end %>
 </span>

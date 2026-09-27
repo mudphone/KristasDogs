@@ -75,5 +75,30 @@ defmodule KristasDogs.HousesTest do
       pet = pet_fixture()
       assert %Ecto.Changeset{} = Houses.change_pet(pet)
     end
+
+    test "create_pet/1 computes normal_primary_breed and normal_age_months" do
+      attrs = %{
+        name: "Wednesday",
+        title: "some title",
+        location: "some location",
+        data_id: "some data_id",
+        age_text: "2 years old",
+        gender: "Female",
+        primary_breed: "Terrier, Jack Russell",
+        species: "dog",
+        campus: "some campus",
+        details_url: "some details_url",
+        profile_image_url: "some profile_image_url"
+      }
+
+      assert {:ok, %Pet{} = pet} = Houses.create_pet(attrs)
+      assert pet.normal_primary_breed == "Jack Russell Terrier"
+      assert pet.normal_age_months == 24
+    end
+
+    test "create_pet/1 leaves normal_age_months nil for unparseable age_text" do
+      assert {:ok, %Pet{} = pet} = Houses.create_pet(%{name: "n", data_id: "d", details_url: "u", profile_image_url: "p", age_text: "some age_text"})
+      assert pet.normal_age_months == nil
+    end
   end
 end

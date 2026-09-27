@@ -44,3 +44,4 @@ npm-debug.log
 .env
 .iex.exs
 *wireguard.conf
+/docs/

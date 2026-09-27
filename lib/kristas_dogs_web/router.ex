@@ -21,6 +21,7 @@ defmodule KristasDogsWeb.Router do
     live "/", DogsLive.Index, :index
     live "/archive/:page", DogsLive.Archive, :index
     live "/archive", DogsLive.Archive, :index
+    live "/stats", StatsLive.Index, :index
   end
 
   # Other scopes may use custom stacks.

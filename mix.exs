@@ -42,6 +42,7 @@ defmodule KristasDogs.MixProject do
       {:phoenix_html, "~> 3.3"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
       {:phoenix_live_view, "~> 1.2"},
+      {:lazy_html, ">= 0.1.0", only: :test},
       {:floki, "~> 0.35.2"},
       {:phoenix_live_dashboard, "~> 0.8.2"},
       {:esbuild, "~> 0.7", runtime: Mix.env() == :dev},

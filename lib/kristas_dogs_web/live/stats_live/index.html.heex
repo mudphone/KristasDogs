@@ -1,0 +1,37 @@
+<div>
+  <div class="pb-8">
+    <.live_component
+      module={NavMenu} id="nav-menu"
+      page_name={@page_name}
+    />
+  </div>
+
+  <h1 class="text-xl font-semibold mt-2 mb-4">Adoption Time Stats</h1>
+
+  <section class="mb-8">
+    <h2 class="font-semibold mb-2">By Breed</h2>
+    <div class="overflow-x-auto">
+      <.beeswarm_chart chart={@breed_chart} />
+    </div>
+  </section>
+
+  <section class="mb-8">
+    <h2 class="font-semibold mb-2">By Size</h2>
+    <.beeswarm_chart chart={@size_chart} />
+  </section>
+
+  <section class="mb-8">
+    <h2 class="font-semibold mb-2">By Gender</h2>
+    <.beeswarm_chart chart={@gender_chart} />
+  </section>
+
+  <section class="mb-8">
+    <h2 class="font-semibold mb-2">By Age (months)</h2>
+    <.scatter_chart chart={@age_chart} />
+  </section>
+
+  <section class="mb-8">
+    <h2 class="font-semibold mb-2">By Weight (lbs)</h2>
+    <.scatter_chart chart={@weight_chart} />
+  </section>
+</div>

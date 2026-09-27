@@ -236,7 +236,7 @@ defmodule KristasDogs.Houses do
   def create_pet(attrs \\ %{}) do
     attrs =
       attrs
-      |> Map.update(:species, nil, &String.downcase(&1))
+      |> Map.update(:species, nil, fn v -> if is_nil(v), do: nil, else: String.downcase(v) end)
 
     %Pet{}
     |> Pet.changeset(attrs)

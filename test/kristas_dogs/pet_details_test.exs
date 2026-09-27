@@ -56,4 +56,36 @@ defmodule KristasDogs.PetDetailsTest do
       assert %Ecto.Changeset{} = PetDetails.change_pet_image(pet_image)
     end
   end
+
+  describe "update_pet_details/2 normalization" do
+    import KristasDogs.HousesFixtures
+
+    test "computes normal_weight_lbs from the weight string" do
+      pet = pet_fixture()
+
+      assert {:ok, updated} =
+               PetDetails.update_pet_details(pet, %{
+                 size: "Medium",
+                 weight: "40.20 pounds",
+                 altered: true,
+                 details_added_at: DateTime.utc_now()
+               })
+
+      assert updated.normal_weight_lbs == 40.20
+    end
+
+    test "leaves normal_weight_lbs nil for N/A weight" do
+      pet = pet_fixture()
+
+      assert {:ok, updated} =
+               PetDetails.update_pet_details(pet, %{
+                 size: "Medium",
+                 weight: "N/A",
+                 altered: true,
+                 details_added_at: DateTime.utc_now()
+               })
+
+      assert updated.normal_weight_lbs == nil
+    end
+  end
 end
