@@ -26,8 +26,11 @@ defmodule KristasDogsWeb.StatsLive.IndexTest do
     assert html =~ "By Age"
     assert html =~ "By Weight"
     assert html =~ "Terrier"
-    assert html =~ "<title>Wednesday (ID: #{dog.id})</title>"
+    assert html =~ "Wednesday (ID: #{dog.id})"
+    assert html =~ "Breed: Terrier"
+    assert html =~ "Days to Adoption: 10"
     assert html =~ "dot-highlight"
+    assert html =~ "dot-tooltip"
     assert html =~ "dot-group"
   end
 

@@ -1,8 +1,11 @@
 import Config
 
+# database_path = "../kristas_dogs_dev.db"
+database_path = "../kristas_dogs_prod_260927.db"
+
 # Configure your database
 config :kristas_dogs, KristasDogs.Repo,
-  database: Path.expand("../kristas_dogs_dev.db", Path.dirname(__ENV__.file)),
+  database: Path.expand(database_path, Path.dirname(__ENV__.file)),
   pool_size: 5,
   stacktrace: true,
   show_sensitive_data_on_connection_error: true

@@ -11,27 +11,27 @@
   <section class="mb-8">
     <h2 class="font-semibold mb-2">By Breed</h2>
     <div class="overflow-x-auto">
-      <.beeswarm_chart chart={@breed_chart} />
+      <.beeswarm_chart chart={@breed_chart} x_label="Breed" />
     </div>
   </section>
 
   <section class="mb-8">
     <h2 class="font-semibold mb-2">By Size</h2>
-    <.beeswarm_chart chart={@size_chart} />
+    <.beeswarm_chart chart={@size_chart} x_label="Size" />
   </section>
 
   <section class="mb-8">
     <h2 class="font-semibold mb-2">By Gender</h2>
-    <.beeswarm_chart chart={@gender_chart} />
+    <.beeswarm_chart chart={@gender_chart} x_label="Gender" />
   </section>
 
   <section class="mb-8">
     <h2 class="font-semibold mb-2">By Age (months)</h2>
-    <.scatter_chart chart={@age_chart} />
+    <.scatter_chart chart={@age_chart} x_label="Age (months)" />
   </section>
 
   <section class="mb-8">
     <h2 class="font-semibold mb-2">By Weight (lbs)</h2>
-    <.scatter_chart chart={@weight_chart} />
+    <.scatter_chart chart={@weight_chart} x_label="Weight (lbs)" />
   </section>
 </div>

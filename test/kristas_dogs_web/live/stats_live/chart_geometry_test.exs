@@ -42,6 +42,14 @@ defmodule KristasDogsWeb.StatsLive.ChartGeometryTest do
       assert [%{id: 42, name: "Fido"}] = layout.dots
     end
 
+    test "each dot carries its category and days for the tooltip" do
+      groups = [%{category: "Beagle", n: 1, median_days: 5.0, dogs: [%{id: 42, name: "Fido", days: 7}]}]
+
+      layout = ChartGeometry.beeswarm_layout(groups, nil)
+
+      assert [%{category: "Beagle", days: 7}] = layout.dots
+    end
+
     test "a larger days value is plotted nearer the top (smaller y) than a smaller one, standard axis convention" do
       groups = [
         %{
@@ -121,6 +129,14 @@ defmodule KristasDogsWeb.StatsLive.ChartGeometryTest do
 
       assert [%{id: 1, name: "Fido"}, %{id: 2, name: "Rex"}] = layout.dots
       assert is_float(layout.reference_y)
+    end
+
+    test "each dot carries its value and days for the tooltip" do
+      points = [%{id: 1, name: "Fido", value: 24, days: 9}]
+
+      layout = ChartGeometry.scatter_layout(points, nil)
+
+      assert [%{value: 24, days: 9}] = layout.dots
     end
   end
 end

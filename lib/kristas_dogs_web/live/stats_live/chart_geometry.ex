@@ -65,7 +65,9 @@ defmodule KristasDogsWeb.StatsLive.ChartGeometry do
               x: column_x + jitter_offset(dot_index) * step,
               y: y,
               id: dog.id,
-              name: dog.name
+              name: dog.name,
+              category: group.category,
+              days: dog.days
             }
           end)
         end)
@@ -103,7 +105,9 @@ defmodule KristasDogsWeb.StatsLive.ChartGeometry do
           x: scale_value_to_x(value, min_x, max_x),
           y: scale_days_to_y(days, min_days, max_days),
           id: id,
-          name: name
+          name: name,
+          value: value,
+          days: days
         }
       end)
 
