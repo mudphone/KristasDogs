@@ -7,7 +7,7 @@ defmodule KristasDogsWeb.StatsLive.ChartsTest do
 
   describe "breed_chart/1" do
     test "builds a beeswarm layout from breed_groups with extra bottom room for rotated labels" do
-      adopted_dog_fixture()
+      listed_dog_fixture()
 
       chart = Charts.breed_chart(nil)
 
@@ -20,7 +20,7 @@ defmodule KristasDogsWeb.StatsLive.ChartsTest do
 
   describe "size_chart/1" do
     test "builds a beeswarm layout from size_groups" do
-      adopted_dog_fixture()
+      listed_dog_fixture()
 
       chart = Charts.size_chart(nil)
 
@@ -31,7 +31,7 @@ defmodule KristasDogsWeb.StatsLive.ChartsTest do
 
   describe "gender_chart/1" do
     test "builds a beeswarm layout from gender_groups" do
-      adopted_dog_fixture()
+      listed_dog_fixture()
 
       chart = Charts.gender_chart(nil)
 
@@ -41,8 +41,8 @@ defmodule KristasDogsWeb.StatsLive.ChartsTest do
 
   describe "age_chart/1" do
     test "builds a scatter layout from age_points with month/year tick labels" do
-      adopted_dog_fixture(%{normal_age_months: 3})
-      adopted_dog_fixture(%{normal_age_months: 120})
+      listed_dog_fixture(%{normal_age_months: 3})
+      listed_dog_fixture(%{normal_age_months: 120})
 
       chart = Charts.age_chart(nil)
 
@@ -53,8 +53,8 @@ defmodule KristasDogsWeb.StatsLive.ChartsTest do
 
   describe "weight_chart/1" do
     test "builds a scatter layout from weight_points" do
-      adopted_dog_fixture(%{normal_weight_lbs: 5.0})
-      adopted_dog_fixture(%{normal_weight_lbs: 90.0})
+      listed_dog_fixture(%{normal_weight_lbs: 5.0})
+      listed_dog_fixture(%{normal_weight_lbs: 90.0})
 
       chart = Charts.weight_chart(nil)
 
@@ -64,7 +64,7 @@ defmodule KristasDogsWeb.StatsLive.ChartsTest do
   end
 
   test "reference_days defaults to the overall median when not given explicitly" do
-    adopted_dog_fixture(%{
+    listed_dog_fixture(%{
       inserted_at: ~U[2025-07-01 00:00:00Z],
       removed_from_website_at: ~U[2025-07-11 00:00:00Z]
     })

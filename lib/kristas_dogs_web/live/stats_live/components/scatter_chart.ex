@@ -9,7 +9,7 @@ defmodule KristasDogsWeb.StatsLive.Components.ScatterChart do
   docs/superpowers/specs/2026-09-27-stats-canvas-charts-design.md.
 
   Clicking a dot shows a tooltip with the dog's name, id, its X-axis
-  value, and its Y-axis value (days to adoption); click handling lives
+  value, and its Y-axis value (days listed); click handling lives
   entirely in JS (assets/js/stats_live/chart_canvas.js), since canvas has
   no DOM elements for the old pure-CSS `:hover` trick to attach to. See
   docs/superpowers/specs/2026-09-24-adoption-time-stats-design.md for the
@@ -48,7 +48,7 @@ defmodule KristasDogsWeb.StatsLive.Components.ScatterChart do
           text-anchor="middle"
           font-size="9"
           fill="#94a3b8"
-        >Days to Adoption</text>
+        >Days Listed</text>
         <g :for={tick <- @chart.x_ticks}>
           <line x1={tick.x} x2={tick.x} y1={@chart.x_axis_y} y2={@chart.x_axis_y + 6} stroke="#94a3b8" stroke-width="1" />
           <text x={tick.x} y={@chart.x_axis_y + 16} text-anchor="middle" font-size="9" fill="#94a3b8">{tick.label}</text>

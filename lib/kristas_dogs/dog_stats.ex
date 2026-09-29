@@ -1,7 +1,7 @@
 defmodule KristasDogs.DogStats do
   @moduledoc """
-  Adoption-time statistics: how long dogs take to be adopted, broken down
-  by breed, age, gender, size, and weight. See
+  Time-listed statistics: how long dogs stay listed on the shelter's
+  website, broken down by breed, age, gender, size, and weight. See
   docs/superpowers/specs/2026-09-24-adoption-time-stats-design.md for the
   full design.
   """
@@ -18,11 +18,11 @@ defmodule KristasDogs.DogStats do
   @size_order %{"Small" => 0, "Medium" => 1, "Large" => 2, "Extra-Large" => 3}
 
   @doc """
-  The shelter-wide median days-to-adoption across all adopted dogs (dogs
+  The shelter-wide median days listed across all listed dogs (dogs
   with a non-nil removed_from_website_at). Returns nil if there are none.
   """
   def overall_median_days do
-    adopted_dogs_query()
+    listed_dogs_query()
     |> select([p], {p.inserted_at, p.removed_from_website_at})
     |> Repo.all()
     |> Enum.map(fn {inserted_at, removed_at} -> days_between(inserted_at, removed_at) end)
@@ -30,12 +30,12 @@ defmodule KristasDogs.DogStats do
   end
 
   @doc """
-  Days-to-adoption grouped by normalized primary breed, sorted ascending
-  by median days (fastest-adopted first). Excludes dogs with no
+  Days listed grouped by normalized primary breed, sorted ascending
+  by median days (shortest-listed first). Excludes dogs with no
   normalized breed.
   """
   def breed_groups do
-    adopted_dogs_query()
+    listed_dogs_query()
     |> where([p], not is_nil(p.normal_primary_breed))
     |> select([p], {p.normal_primary_breed, p.id, p.name, p.inserted_at, p.removed_from_website_at})
     |> Repo.all()
@@ -44,11 +44,11 @@ defmodule KristasDogs.DogStats do
   end
 
   @doc """
-  Days-to-adoption grouped by size, sorted ascending by median days.
+  Days listed grouped by size, sorted ascending by median days.
   Excludes dogs with a blank size.
   """
   def size_groups do
-    adopted_dogs_query()
+    listed_dogs_query()
     |> where([p], not is_nil(p.size) and p.size != "")
     |> select([p], {p.size, p.id, p.name, p.inserted_at, p.removed_from_website_at})
     |> Repo.all()
@@ -57,10 +57,10 @@ defmodule KristasDogs.DogStats do
   end
 
   @doc """
-  Days-to-adoption grouped by gender, sorted ascending by median days.
+  Days listed grouped by gender, sorted ascending by median days.
   """
   def gender_groups do
-    adopted_dogs_query()
+    listed_dogs_query()
     |> where([p], not is_nil(p.gender) and p.gender != "")
     |> select([p], {p.gender, p.id, p.name, p.inserted_at, p.removed_from_website_at})
     |> Repo.all()
@@ -98,7 +98,7 @@ defmodule KristasDogs.DogStats do
     |> Repo.one()
   end
 
-  defp adopted_dogs_query do
+  defp listed_dogs_query do
     species = Pet.species(:dog)
 
     from p in Pet,
@@ -113,11 +113,11 @@ defmodule KristasDogs.DogStats do
 
   @doc """
   One `%{id: id, name: name, value: months, days: days}` entry per
-  adopted dog with a known age, for the age-vs-days-to-adoption
+  listed dog with a known age, for the age-vs-days-listed
   scatterplot. `id`/`name` are carried through for the hover tooltip.
   """
   def age_points do
-    adopted_dogs_query()
+    listed_dogs_query()
     |> where([p], not is_nil(p.normal_age_months))
     |> select([p], {p.id, p.name, p.normal_age_months, p.inserted_at, p.removed_from_website_at})
     |> Repo.all()
@@ -127,12 +127,12 @@ defmodule KristasDogs.DogStats do
   end
 
   @doc """
-  One `%{id: id, name: name, value: lbs, days: days}` entry per adopted
-  dog with a known weight, for the weight-vs-days-to-adoption
+  One `%{id: id, name: name, value: lbs, days: days}` entry per listed
+  dog with a known weight, for the weight-vs-days-listed
   scatterplot. `id`/`name` are carried through for the hover tooltip.
   """
   def weight_points do
-    adopted_dogs_query()
+    listed_dogs_query()
     |> where([p], not is_nil(p.normal_weight_lbs))
     |> select([p], {p.id, p.name, p.normal_weight_lbs, p.inserted_at, p.removed_from_website_at})
     |> Repo.all()

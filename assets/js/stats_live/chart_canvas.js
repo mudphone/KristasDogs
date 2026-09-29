@@ -133,7 +133,7 @@ const ChartDots = {
     tooltip.replaceChildren(
       lineEl(`${dot.name} (ID: ${dot.id})`),
       lineEl(`${this.xLabel}: ${dot.category}`),
-      lineEl(`Days to Adoption: ${dot.days}`)
+      lineEl(`Days Listed: ${dot.days}`)
     )
     tooltip.style.left = `${pageX + 8}px`
     tooltip.style.top = `${pageY - 8}px`

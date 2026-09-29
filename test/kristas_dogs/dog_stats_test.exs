@@ -20,17 +20,17 @@ defmodule KristasDogs.DogStatsTest do
   end
 
   describe "overall_median_days/0" do
-    test "returns nil when there are no adopted dogs" do
+    test "returns nil when there are no listed dogs" do
       assert DogStats.overall_median_days() == nil
     end
 
-    test "computes the median days-to-adoption across all adopted dogs" do
-      adopted_dog_fixture(%{
+    test "computes the median days listed across all listed dogs" do
+      listed_dog_fixture(%{
         inserted_at: ~U[2025-07-01 00:00:00Z],
         removed_from_website_at: ~U[2025-07-06 00:00:00Z]
       })
 
-      adopted_dog_fixture(%{
+      listed_dog_fixture(%{
         inserted_at: ~U[2025-07-01 00:00:00Z],
         removed_from_website_at: ~U[2025-07-21 00:00:00Z]
       })
@@ -39,12 +39,12 @@ defmodule KristasDogs.DogStatsTest do
     end
 
     test "excludes dogs still listed (no removed_from_website_at)" do
-      adopted_dog_fixture(%{
+      listed_dog_fixture(%{
         inserted_at: ~U[2025-07-01 00:00:00Z],
         removed_from_website_at: ~U[2025-07-06 00:00:00Z]
       })
 
-      adopted_dog_fixture(%{
+      listed_dog_fixture(%{
         inserted_at: ~U[2025-07-01 00:00:00Z],
         removed_from_website_at: nil
       })
@@ -53,12 +53,12 @@ defmodule KristasDogs.DogStatsTest do
     end
 
     test "excludes dogs inserted before the data-quality cutoff" do
-      adopted_dog_fixture(%{
+      listed_dog_fixture(%{
         inserted_at: ~U[2025-06-30 01:12:49Z],
         removed_from_website_at: ~U[2025-07-05 01:12:49Z]
       })
 
-      adopted_dog_fixture(%{
+      listed_dog_fixture(%{
         inserted_at: ~U[2025-06-29 00:00:00Z],
         removed_from_website_at: ~U[2025-08-28 00:00:00Z]
       })
@@ -70,14 +70,14 @@ defmodule KristasDogs.DogStatsTest do
   describe "breed_groups/0" do
     test "groups by normal_primary_breed, sorted ascending by median days" do
       terrier =
-        adopted_dog_fixture(%{
+        listed_dog_fixture(%{
           normal_primary_breed: "Terrier",
           inserted_at: ~U[2025-07-01 00:00:00Z],
           removed_from_website_at: ~U[2025-07-21 00:00:00Z]
         })
 
       beagle =
-        adopted_dog_fixture(%{
+        listed_dog_fixture(%{
           normal_primary_breed: "Beagle",
           inserted_at: ~U[2025-07-01 00:00:00Z],
           removed_from_website_at: ~U[2025-07-06 00:00:00Z]
@@ -95,7 +95,7 @@ defmodule KristasDogs.DogStatsTest do
     end
 
     test "excludes dogs with no normalized breed" do
-      adopted_dog_fixture(%{normal_primary_breed: nil})
+      listed_dog_fixture(%{normal_primary_breed: nil})
 
       assert DogStats.breed_groups() == []
     end
@@ -104,13 +104,13 @@ defmodule KristasDogs.DogStatsTest do
   describe "size_groups/0" do
     test "groups by size, excluding blank size" do
       dog =
-        adopted_dog_fixture(%{
+        listed_dog_fixture(%{
           size: "Small",
           inserted_at: ~U[2025-07-01 00:00:00Z],
           removed_from_website_at: ~U[2025-07-06 00:00:00Z]
         })
 
-      adopted_dog_fixture(%{size: ""})
+      listed_dog_fixture(%{size: ""})
 
       assert [%{category: "Small", n: 1, median_days: 5.0, dogs: [%{id: id, name: name, days: 5}]}] =
                DogStats.size_groups()
@@ -120,25 +120,25 @@ defmodule KristasDogs.DogStatsTest do
     end
 
     test "orders by Small, Medium, Large, Extra-Large regardless of median days" do
-      adopted_dog_fixture(%{
+      listed_dog_fixture(%{
         size: "Large",
         inserted_at: ~U[2025-07-01 00:00:00Z],
         removed_from_website_at: ~U[2025-07-02 00:00:00Z]
       })
 
-      adopted_dog_fixture(%{
+      listed_dog_fixture(%{
         size: "Small",
         inserted_at: ~U[2025-07-01 00:00:00Z],
         removed_from_website_at: ~U[2025-08-01 00:00:00Z]
       })
 
-      adopted_dog_fixture(%{
+      listed_dog_fixture(%{
         size: "Extra-Large",
         inserted_at: ~U[2025-07-01 00:00:00Z],
         removed_from_website_at: ~U[2025-07-15 00:00:00Z]
       })
 
-      adopted_dog_fixture(%{
+      listed_dog_fixture(%{
         size: "Medium",
         inserted_at: ~U[2025-07-01 00:00:00Z],
         removed_from_website_at: ~U[2025-07-10 00:00:00Z]
@@ -152,7 +152,7 @@ defmodule KristasDogs.DogStatsTest do
   describe "gender_groups/0" do
     test "groups by gender" do
       dog =
-        adopted_dog_fixture(%{
+        listed_dog_fixture(%{
           gender: "Female",
           inserted_at: ~U[2025-07-01 00:00:00Z],
           removed_from_website_at: ~U[2025-07-06 00:00:00Z]
@@ -169,13 +169,13 @@ defmodule KristasDogs.DogStatsTest do
   describe "age_points/0" do
     test "returns one point per dog with a known age" do
       dog =
-        adopted_dog_fixture(%{
+        listed_dog_fixture(%{
           normal_age_months: 24,
           inserted_at: ~U[2025-07-01 00:00:00Z],
           removed_from_website_at: ~U[2025-07-06 00:00:00Z]
         })
 
-      adopted_dog_fixture(%{normal_age_months: nil})
+      listed_dog_fixture(%{normal_age_months: nil})
 
       assert [%{id: id, name: name, value: 24, days: 5}] = DogStats.age_points()
       assert id == dog.id
@@ -189,14 +189,14 @@ defmodule KristasDogs.DogStatsTest do
     end
 
     test "returns the dog's updated_at when there's one dog" do
-      dog = adopted_dog_fixture(%{updated_at: ~U[2025-07-05 00:00:00Z]})
+      dog = listed_dog_fixture(%{updated_at: ~U[2025-07-05 00:00:00Z]})
 
       assert DogStats.data_version() == dog.updated_at
     end
 
     test "returns the max updated_at across multiple dogs" do
-      adopted_dog_fixture(%{updated_at: ~U[2025-07-05 00:00:00Z]})
-      adopted_dog_fixture(%{updated_at: ~U[2025-07-20 00:00:00Z]})
+      listed_dog_fixture(%{updated_at: ~U[2025-07-05 00:00:00Z]})
+      listed_dog_fixture(%{updated_at: ~U[2025-07-20 00:00:00Z]})
 
       assert DogStats.data_version() == ~U[2025-07-20 00:00:00Z]
     end
@@ -205,13 +205,13 @@ defmodule KristasDogs.DogStatsTest do
   describe "weight_points/0" do
     test "returns one point per dog with a known weight" do
       dog =
-        adopted_dog_fixture(%{
+        listed_dog_fixture(%{
           normal_weight_lbs: 40.0,
           inserted_at: ~U[2025-07-01 00:00:00Z],
           removed_from_website_at: ~U[2025-07-06 00:00:00Z]
         })
 
-      adopted_dog_fixture(%{normal_weight_lbs: nil})
+      listed_dog_fixture(%{normal_weight_lbs: nil})
 
       assert [%{id: id, name: name, value: 40.0, days: 5}] = DogStats.weight_points()
       assert id == dog.id

@@ -4,8 +4,8 @@ defmodule KristasDogsWeb.StatsLive.IndexTest do
   import Phoenix.LiveViewTest
   import KristasDogs.DogStatsFixtures
 
-  test "renders all five adoption-time charts with a canvas dot overlay for each", %{conn: conn} do
-    adopted_dog_fixture(%{
+  test "renders all five time-listed charts with a canvas dot overlay for each", %{conn: conn} do
+    listed_dog_fixture(%{
       name: "Wednesday",
       normal_primary_breed: "Terrier",
       size: "Medium",
@@ -18,7 +18,7 @@ defmodule KristasDogsWeb.StatsLive.IndexTest do
 
     {:ok, _view, html} = live(conn, ~p"/stats")
 
-    assert html =~ "Adoption Time Stats"
+    assert html =~ "Time Listed Stats"
     assert html =~ "By Breed"
     assert html =~ "By Size"
     assert html =~ "By Gender"
@@ -36,8 +36,8 @@ defmodule KristasDogsWeb.StatsLive.IndexTest do
     assert html =~ "Click a dot for details"
   end
 
-  test "renders without error when there are no adopted dogs at all", %{conn: conn} do
+  test "renders without error when there are no listed dogs at all", %{conn: conn} do
     assert {:ok, _view, html} = live(conn, ~p"/stats")
-    assert html =~ "Adoption Time Stats"
+    assert html =~ "Time Listed Stats"
   end
 end

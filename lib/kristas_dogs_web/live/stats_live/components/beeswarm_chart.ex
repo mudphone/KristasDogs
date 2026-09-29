@@ -9,7 +9,7 @@ defmodule KristasDogsWeb.StatsLive.Components.BeeswarmChart do
   docs/superpowers/specs/2026-09-27-stats-canvas-charts-design.md.
 
   Clicking a dot shows a tooltip with the dog's name, id, its X-axis
-  value (the category), and its Y-axis value (days to adoption). Click
+  value (the category), and its Y-axis value (days listed). Click
   handling lives entirely in JS (assets/js/stats_live/chart_canvas.js),
   since canvas has no DOM elements for the old pure-CSS `:hover` trick to
   attach to. See
@@ -57,7 +57,7 @@ defmodule KristasDogsWeb.StatsLive.Components.BeeswarmChart do
           text-anchor="middle"
           font-size="9"
           fill="#94a3b8"
-        >Days to Adoption</text>
+        >Days Listed</text>
         <line
           :if={@chart.reference_y}
           x1="0"

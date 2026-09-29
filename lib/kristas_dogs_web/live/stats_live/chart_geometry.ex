@@ -1,6 +1,6 @@
 defmodule KristasDogsWeb.StatsLive.ChartGeometry do
   @moduledoc """
-  Pure geometry calculations for the adoption-stats SVG charts. Turns
+  Pure geometry calculations for the days-listed SVG charts. Turns
   KristasDogs.DogStats results into pixel coordinates. No Ecto, no HTML,
   fully unit testable without a database or a rendered page.
   """
@@ -25,7 +25,7 @@ defmodule KristasDogsWeb.StatsLive.ChartGeometry do
   dogs: [%{id: integer(), name: String.t(), days: number()}]}` (as
   returned by `KristasDogs.DogStats.breed_groups/0`, `.size_groups/0`,
   `.gender_groups/0`), plus the shelter-wide overall median
-  days-to-adoption (for the reference line, or nil to omit it).
+  days listed (for the reference line, or nil to omit it).
 
   Columns appear in the same order as the input list. Callers should
   sort groups the way they want them displayed first.
@@ -123,7 +123,7 @@ defmodule KristasDogsWeb.StatsLive.ChartGeometry do
   Builds the layout for a scatterplot from a list of `%{id: integer(),
   name: String.t(), value: number(), days: number()}` (as returned by
   `KristasDogs.DogStats.age_points/0` / `.weight_points/0`), plus the
-  shelter-wide overall median days-to-adoption (for the reference line,
+  shelter-wide overall median days listed (for the reference line,
   or nil to omit it).
 
   Options:
@@ -222,7 +222,7 @@ defmodule KristasDogsWeb.StatsLive.ChartGeometry do
   end
 
   defp scale_days_to_y(days, min_days, max_days) do
-    # Log scale: adoption times are right-skewed with a long tail, so a
+    # Log scale: time-listed values are right-skewed with a long tail, so a
     # linear scale squeezes most dots into a sliver. +1 keeps 0 defined.
     log_days = :math.log(days + 1)
     log_min = :math.log(min_days + 1)

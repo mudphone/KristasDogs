@@ -5,7 +5,7 @@ defmodule KristasDogsWeb.DotsControllerTest do
 
   describe "GET /api/stats/dots/breed" do
     test "returns one entry per dog with id, x, y, name, category, and days", %{conn: conn} do
-      adopted_dog_fixture(%{name: "Wednesday", normal_primary_breed: "Terrier"})
+      listed_dog_fixture(%{name: "Wednesday", normal_primary_breed: "Terrier"})
 
       conn = get(conn, ~p"/api/stats/dots/breed")
 
@@ -18,7 +18,7 @@ defmodule KristasDogsWeb.DotsControllerTest do
     end
 
     test "sets Cache-Control: no-cache and a content-hash ETag", %{conn: conn} do
-      adopted_dog_fixture()
+      listed_dog_fixture()
 
       conn = get(conn, ~p"/api/stats/dots/breed")
 
@@ -28,7 +28,7 @@ defmodule KristasDogsWeb.DotsControllerTest do
     end
 
     test "returns 304 with no body when If-None-Match matches the current ETag", %{conn: conn} do
-      adopted_dog_fixture()
+      listed_dog_fixture()
 
       first = get(conn, ~p"/api/stats/dots/breed")
       [etag] = get_resp_header(first, "etag")
@@ -43,7 +43,7 @@ defmodule KristasDogsWeb.DotsControllerTest do
     end
 
     test "returns 200 with a fresh body when If-None-Match doesn't match", %{conn: conn} do
-      adopted_dog_fixture()
+      listed_dog_fixture()
 
       conn =
         conn
@@ -56,7 +56,7 @@ defmodule KristasDogsWeb.DotsControllerTest do
 
   describe "GET /api/stats/dots/age" do
     test "formats the age value the same way the old hover tooltip did", %{conn: conn} do
-      adopted_dog_fixture(%{normal_age_months: 24})
+      listed_dog_fixture(%{normal_age_months: 24})
 
       conn = get(conn, ~p"/api/stats/dots/age")
 
@@ -67,7 +67,7 @@ defmodule KristasDogsWeb.DotsControllerTest do
 
   describe "GET /api/stats/dots/weight" do
     test "passes the weight value through as a plain number string", %{conn: conn} do
-      adopted_dog_fixture(%{normal_weight_lbs: 40.0})
+      listed_dog_fixture(%{normal_weight_lbs: 40.0})
 
       conn = get(conn, ~p"/api/stats/dots/weight")
 
@@ -78,7 +78,7 @@ defmodule KristasDogsWeb.DotsControllerTest do
 
   describe "GET /api/stats/dots/size" do
     test "returns dots grouped by size category", %{conn: conn} do
-      adopted_dog_fixture(%{size: "Large"})
+      listed_dog_fixture(%{size: "Large"})
 
       conn = get(conn, ~p"/api/stats/dots/size")
 
@@ -88,7 +88,7 @@ defmodule KristasDogsWeb.DotsControllerTest do
 
   describe "GET /api/stats/dots/gender" do
     test "returns dots grouped by gender category", %{conn: conn} do
-      adopted_dog_fixture(%{gender: "Female"})
+      listed_dog_fixture(%{gender: "Female"})
 
       conn = get(conn, ~p"/api/stats/dots/gender")
 

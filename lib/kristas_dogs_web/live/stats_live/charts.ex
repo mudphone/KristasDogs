@@ -1,6 +1,6 @@
 defmodule KristasDogsWeb.StatsLive.Charts do
   @moduledoc """
-  Assembles each of the 5 adoption-stats charts' full geometry (dots,
+  Assembles each of the 5 days-listed charts' full geometry (dots,
   columns, ticks, reference line) by combining KristasDogs.DogStats query
   results with KristasDogsWeb.StatsLive.ChartGeometry layout options.
   Shared by StatsLive.Index (renders the SVG chrome) and DotsController

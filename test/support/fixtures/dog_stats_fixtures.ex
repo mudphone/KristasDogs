@@ -1,6 +1,6 @@
 defmodule KristasDogs.DogStatsFixtures do
   @moduledoc """
-  Test helper for creating fully-controlled "adopted dog" rows for
+  Test helper for creating fully-controlled "listed dog" rows for
   KristasDogs.DogStats tests. Bypasses Pet.changeset/2 and
   Pet.changeset_details/2 so tests can set inserted_at,
   removed_from_website_at, and normalized columns directly.
@@ -9,7 +9,7 @@ defmodule KristasDogs.DogStatsFixtures do
   alias KristasDogs.Repo
   alias KristasDogs.Houses.Pet
 
-  def adopted_dog_fixture(attrs \\ %{}) do
+  def listed_dog_fixture(attrs \\ %{}) do
     defaults = %{
       name: "Fixture Dog",
       data_id: "fixture-dog-#{System.unique_integer([:positive])}",

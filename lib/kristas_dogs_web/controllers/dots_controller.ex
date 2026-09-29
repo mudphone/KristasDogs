@@ -1,7 +1,7 @@
 defmodule KristasDogsWeb.DotsController do
   @moduledoc """
   Serves each stats chart's per-dog dot data (id, pixel x/y, name,
-  category/value label, days-to-adoption) as JSON, for the canvas overlay
+  category/value label, days listed) as JSON, for the canvas overlay
   that draws and hit-tests dots client-side. See
   docs/superpowers/specs/2026-09-27-stats-canvas-charts-design.md.
 
