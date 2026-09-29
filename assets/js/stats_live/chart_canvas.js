@@ -44,17 +44,10 @@ const ChartDots = {
       .catch(error => console.error(error))
 
     this.el.addEventListener("click", event => this.handleClick(event))
-
-    this.handleScroll = () => {
-      this.selected = null
-      this.hideTooltip()
-    }
-    window.addEventListener("scroll", this.handleScroll, { passive: true })
   },
 
   destroyed() {
     if (this.tooltip) this.tooltip.remove()
-    window.removeEventListener("scroll", this.handleScroll)
   },
 
   // Ratio between the canvas's rendered CSS width and its logical/server
@@ -111,7 +104,7 @@ const ChartDots = {
       this.hideTooltip()
     } else if (nearest) {
       this.selected = nearest
-      this.showTooltip(nearest, event.clientX, event.clientY)
+      this.showTooltip(nearest, event.pageX, event.pageY)
     } else {
       this.selected = null
       this.hideTooltip()
@@ -135,15 +128,15 @@ const ChartDots = {
     return closest
   },
 
-  showTooltip(dot, clientX, clientY) {
+  showTooltip(dot, pageX, pageY) {
     const tooltip = this.tooltipElement()
     tooltip.replaceChildren(
       lineEl(`${dot.name} (ID: ${dot.id})`),
       lineEl(`${this.xLabel}: ${dot.category}`),
       lineEl(`Days to Adoption: ${dot.days}`)
     )
-    tooltip.style.left = `${clientX + 8}px`
-    tooltip.style.top = `${clientY - 8}px`
+    tooltip.style.left = `${pageX + 8}px`
+    tooltip.style.top = `${pageY - 8}px`
     tooltip.hidden = false
   },
 
@@ -155,7 +148,7 @@ const ChartDots = {
     if (!this.tooltip) {
       this.tooltip = document.createElement("div")
       this.tooltip.className =
-        "fixed z-50 rounded bg-slate-900/95 px-2 py-1.5 text-xs text-white shadow-lg pointer-events-none"
+        "absolute z-50 rounded bg-slate-900/95 px-2 py-1.5 text-xs text-white shadow-lg pointer-events-none"
       this.tooltip.hidden = true
       document.body.appendChild(this.tooltip)
     }
