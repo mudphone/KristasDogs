@@ -11,27 +11,27 @@
   <section class="mb-8 rounded-lg bg-zinc-50 p-4 ring-1 ring-zinc-200">
     <h2 class="font-semibold mb-2">By Breed</h2>
     <div class="overflow-x-auto">
-      <.beeswarm_chart chart={@breed_chart} x_label="Breed" vertical_labels={true} />
+      <.beeswarm_chart chart={@breed_chart} chart_name="breed" dots_url={~p"/api/stats/dots/breed"} x_label="Breed" vertical_labels={true} />
     </div>
   </section>
 
   <section class="mb-8 rounded-lg bg-zinc-50 p-4 ring-1 ring-zinc-200">
     <h2 class="font-semibold mb-2">By Size</h2>
-    <.beeswarm_chart chart={@size_chart} x_label="Size" responsive={true} />
+    <.beeswarm_chart chart={@size_chart} chart_name="size" dots_url={~p"/api/stats/dots/size"} x_label="Size" responsive={true} />
   </section>
 
   <section class="mb-8 rounded-lg bg-zinc-50 p-4 ring-1 ring-zinc-200">
     <h2 class="font-semibold mb-2">By Gender</h2>
-    <.beeswarm_chart chart={@gender_chart} x_label="Gender" responsive={true} />
+    <.beeswarm_chart chart={@gender_chart} chart_name="gender" dots_url={~p"/api/stats/dots/gender"} x_label="Gender" responsive={true} />
   </section>
 
   <section class="mb-8 rounded-lg bg-zinc-50 p-4 ring-1 ring-zinc-200">
     <h2 class="font-semibold mb-2">By Age (months)</h2>
-    <.scatter_chart chart={@age_chart} x_label="Age" value_format={:age_months} responsive={true} />
+    <.scatter_chart chart={@age_chart} chart_name="age" dots_url={~p"/api/stats/dots/age"} x_label="Age" responsive={true} />
   </section>
 
   <section class="mb-8 rounded-lg bg-zinc-50 p-4 ring-1 ring-zinc-200">
     <h2 class="font-semibold mb-2">By Weight (lbs)</h2>
-    <.scatter_chart chart={@weight_chart} x_label="Weight (lbs)" responsive={true} />
+    <.scatter_chart chart={@weight_chart} chart_name="weight" dots_url={~p"/api/stats/dots/weight"} x_label="Weight (lbs)" responsive={true} />
   </section>
 </div>

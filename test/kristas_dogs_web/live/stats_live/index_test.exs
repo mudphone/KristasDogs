@@ -4,18 +4,17 @@ defmodule KristasDogsWeb.StatsLive.IndexTest do
   import Phoenix.LiveViewTest
   import KristasDogs.DogStatsFixtures
 
-  test "renders all five adoption-time charts with a per-dog hover tooltip", %{conn: conn} do
-    dog =
-      adopted_dog_fixture(%{
-        name: "Wednesday",
-        normal_primary_breed: "Terrier",
-        size: "Medium",
-        gender: "Male",
-        normal_age_months: 24,
-        normal_weight_lbs: 40.0,
-        inserted_at: ~U[2025-07-01 00:00:00Z],
-        removed_from_website_at: ~U[2025-07-11 00:00:00Z]
-      })
+  test "renders all five adoption-time charts with a canvas dot overlay for each", %{conn: conn} do
+    adopted_dog_fixture(%{
+      name: "Wednesday",
+      normal_primary_breed: "Terrier",
+      size: "Medium",
+      gender: "Male",
+      normal_age_months: 24,
+      normal_weight_lbs: 40.0,
+      inserted_at: ~U[2025-07-01 00:00:00Z],
+      removed_from_website_at: ~U[2025-07-11 00:00:00Z]
+    })
 
     {:ok, _view, html} = live(conn, ~p"/stats")
 
@@ -26,13 +25,15 @@ defmodule KristasDogsWeb.StatsLive.IndexTest do
     assert html =~ "By Age"
     assert html =~ "By Weight"
     assert html =~ "Terrier"
-    assert html =~ "Wednesday (ID: #{dog.id})"
-    assert html =~ "Breed: Terrier"
-    assert html =~ "Days to Adoption: 10"
-    assert html =~ "Age: 2.0 years"
-    assert html =~ "dot-highlight"
-    assert html =~ "dot-tooltip"
-    assert html =~ "dot-group"
+
+    assert html =~ ~s(id="chart-dots-breed")
+    assert html =~ ~s(id="chart-dots-size")
+    assert html =~ ~s(id="chart-dots-gender")
+    assert html =~ ~s(id="chart-dots-age")
+    assert html =~ ~s(id="chart-dots-weight")
+    assert html =~ ~s(phx-hook="ChartDots")
+    assert html =~ ~s(data-dots-url="/api/stats/dots/breed")
+    assert html =~ "Click a dot for details"
   end
 
   test "renders without error when there are no adopted dogs at all", %{conn: conn} do

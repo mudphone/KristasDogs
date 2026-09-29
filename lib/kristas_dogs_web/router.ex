@@ -24,10 +24,15 @@ defmodule KristasDogsWeb.Router do
     live "/stats", StatsLive.Index, :index
   end
 
-  # Other scopes may use custom stacks.
-  # scope "/api", KristasDogsWeb do
-  #   pipe_through :api
-  # end
+  scope "/api", KristasDogsWeb do
+    pipe_through :api
+
+    get "/stats/dots/breed", DotsController, :breed
+    get "/stats/dots/size", DotsController, :size
+    get "/stats/dots/gender", DotsController, :gender
+    get "/stats/dots/age", DotsController, :age
+    get "/stats/dots/weight", DotsController, :weight
+  end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development
   if Application.compile_env(:kristas_dogs, :dev_routes) do

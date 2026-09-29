@@ -2,7 +2,7 @@ defmodule KristasDogsWeb.StatsLive.Index do
   use KristasDogsWeb, :live_view
 
   alias KristasDogs.DogStats
-  alias KristasDogsWeb.StatsLive.ChartGeometry
+  alias KristasDogsWeb.StatsLive.Charts
   alias KristasDogsWeb.DogsLive.NavMenu
 
   import KristasDogsWeb.StatsLive.Components.BeeswarmChart
@@ -15,23 +15,12 @@ defmodule KristasDogsWeb.StatsLive.Index do
     socket =
       socket
       |> assign(page_name: :stats, page_title: "Stats")
-      |> assign(breed_chart: ChartGeometry.beeswarm_layout(DogStats.breed_groups(), reference_days, plot_bottom: 200))
-      |> assign(size_chart: ChartGeometry.beeswarm_layout(DogStats.size_groups(), reference_days))
-      |> assign(gender_chart: ChartGeometry.beeswarm_layout(DogStats.gender_groups(), reference_days))
-      |> assign(
-        age_chart:
-          ChartGeometry.scatter_layout(DogStats.age_points(), reference_days,
-            x_tick_candidates: [0, 6, 12, 24, 60, 120],
-            x_tick_label: &age_tick_label/1
-          )
-      )
-      |> assign(weight_chart: ChartGeometry.scatter_layout(DogStats.weight_points(), reference_days, x_tick_candidates: [0, 10, 25, 50, 75, 100]))
+      |> assign(breed_chart: Charts.breed_chart(reference_days) |> Map.delete(:dots))
+      |> assign(size_chart: Charts.size_chart(reference_days) |> Map.delete(:dots))
+      |> assign(gender_chart: Charts.gender_chart(reference_days) |> Map.delete(:dots))
+      |> assign(age_chart: Charts.age_chart(reference_days) |> Map.delete(:dots))
+      |> assign(weight_chart: Charts.weight_chart(reference_days) |> Map.delete(:dots))
 
     {:ok, socket}
   end
-
-  # Ticks up to and including 12 months show in months; above that,
-  # in years. Both candidate lists are whole-year multiples above 12.
-  defp age_tick_label(months) when months <= 12, do: "#{trunc(months)}m"
-  defp age_tick_label(months), do: "#{round(months / 12)}y"
 end
