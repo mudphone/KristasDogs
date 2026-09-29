@@ -59,12 +59,7 @@ if config_env() == :prod do
       # See the documentation on https://hexdocs.pm/plug_cowboy/Plug.Cowboy.html
       # for details about using IPv6 vs IPv4 and loopback vs public addresses.
       ip: {0, 0, 0, 0, 0, 0, 0, 0},
-      port: port,
-      # Compresses dynamic responses (the /stats page HTML and the
-      # /api/stats/dots/* JSON) when the client sends Accept-Encoding:
-      # gzip. Plug.Static's own gzip option (set to false in endpoint.ex)
-      # only covers pre-built static files, not these.
-      protocol_options: [stream_handlers: [:cowboy_compress_h, :cowboy_stream_h]]
+      port: port
     ],
     secret_key_base: secret_key_base
 
