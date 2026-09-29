@@ -174,17 +174,19 @@ defmodule KristasDogs.Houses do
       where:
         is_nil(p.removed_from_website_at) and
           p.id not in ^seen_ids,
-      update: [set: [removed_from_website_at: ^now]]
+      update: [set: [removed_from_website_at: ^now, updated_at: ^now]]
     )
     |> Repo.update_all([])
   end
 
   def unremove_dog(pet_id) do
+    now = DateTime.utc_now()
+
     from(p in Pet,
       where:
         not is_nil(p.removed_from_website_at) and
           p.id == ^pet_id,
-      update: [set: [removed_from_website_at: nil]]
+      update: [set: [removed_from_website_at: nil, updated_at: ^now]]
     )
     |> Repo.update_all([])
   end

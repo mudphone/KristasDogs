@@ -14,6 +14,7 @@ defmodule KristasDogs.Application do
     children = [
       KristasDogsWeb.Telemetry,
       KristasDogs.Repo,
+      KristasDogs.DotsCache,
       {Ecto.Migrator,
         repos: Application.fetch_env!(:kristas_dogs, :ecto_repos),
         skip: skip_migrations?()},

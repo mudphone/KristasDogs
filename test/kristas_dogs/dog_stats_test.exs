@@ -183,6 +183,25 @@ defmodule KristasDogs.DogStatsTest do
     end
   end
 
+  describe "data_version/0" do
+    test "returns nil when there are no dogs" do
+      assert DogStats.data_version() == nil
+    end
+
+    test "returns the dog's updated_at when there's one dog" do
+      dog = adopted_dog_fixture(%{updated_at: ~U[2025-07-05 00:00:00Z]})
+
+      assert DogStats.data_version() == dog.updated_at
+    end
+
+    test "returns the max updated_at across multiple dogs" do
+      adopted_dog_fixture(%{updated_at: ~U[2025-07-05 00:00:00Z]})
+      adopted_dog_fixture(%{updated_at: ~U[2025-07-20 00:00:00Z]})
+
+      assert DogStats.data_version() == ~U[2025-07-20 00:00:00Z]
+    end
+  end
+
   describe "weight_points/0" do
     test "returns one point per dog with a known weight" do
       dog =

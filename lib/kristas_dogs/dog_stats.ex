@@ -85,6 +85,19 @@ defmodule KristasDogs.DogStats do
     end
   end
 
+  @doc """
+  A cheap freshness signal for the dots cache: the latest updated_at
+  across all dog pets, or nil if there are none. Changes whenever the
+  scraper inserts or updates a dog, without running any of the full
+  stats queries (grouping, median, exclusion filters).
+  """
+  def data_version do
+    species = Pet.species(:dog)
+
+    from(p in Pet, where: p.species == ^species, select: max(p.updated_at))
+    |> Repo.one()
+  end
+
   defp adopted_dogs_query do
     species = Pet.species(:dog)
 

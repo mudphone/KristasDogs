@@ -9,22 +9,33 @@ defmodule KristasDogsWeb.DotsController do
   (the same functions StatsLive.Index uses for the SVG chrome), not
   recomputed client-side, so there's a single implementation of the
   beeswarm packing / scatter scaling logic.
+
+  Responses are also cached in memory (KristasDogs.DotsCache), keyed on
+  a cheap data-version check, so repeat or 304 requests skip the query,
+  layout, encode, and hash work when the data has not changed. The
+  cache version also includes the deployed image reference, so a new
+  deploy invalidates all cached entries even if no pet data changed.
   """
 
   use KristasDogsWeb, :controller
 
+  alias KristasDogs.DogStats
   alias KristasDogsWeb.StatsLive.Charts
   alias KristasDogsWeb.StatsLive.Components.ScatterChart
 
-  def breed(conn, _params), do: render_dots(conn, Charts.breed_chart())
-  def size(conn, _params), do: render_dots(conn, Charts.size_chart())
-  def gender(conn, _params), do: render_dots(conn, Charts.gender_chart())
-  def age(conn, _params), do: render_dots(conn, Charts.age_chart(), :age_months)
-  def weight(conn, _params), do: render_dots(conn, Charts.weight_chart(), :raw)
+  def breed(conn, _params), do: render_dots(conn, :breed, &Charts.breed_chart/0)
+  def size(conn, _params), do: render_dots(conn, :size, &Charts.size_chart/0)
+  def gender(conn, _params), do: render_dots(conn, :gender, &Charts.gender_chart/0)
+  def age(conn, _params), do: render_dots(conn, :age, &Charts.age_chart/0, :age_months)
+  def weight(conn, _params), do: render_dots(conn, :weight, &Charts.weight_chart/0, :raw)
 
-  defp render_dots(conn, chart, value_format \\ nil) do
-    body = chart.dots |> Enum.map(&dot_payload(&1, value_format)) |> Jason.encode!()
-    etag = etag_for(body)
+  defp render_dots(conn, chart_key, chart_fn, value_format \\ nil) do
+    {body, etag} =
+      KristasDogs.DotsCache.fetch(chart_key, &cache_version/0, fn ->
+        chart = chart_fn.()
+        body = chart.dots |> Enum.map(&dot_payload(&1, value_format)) |> Jason.encode!()
+        {body, etag_for(body)}
+      end)
 
     conn = put_resp_header(conn, "cache-control", "no-cache")
 
@@ -45,6 +56,10 @@ defmodule KristasDogsWeb.DotsController do
   defp dot_payload(%{value: value} = dot, value_format) do
     category = value |> ScatterChart.format_value(value_format) |> to_string()
     %{id: dot.id, x: dot.x, y: dot.y, name: dot.name, category: category, days: dot.days}
+  end
+
+  defp cache_version do
+    {DogStats.data_version(), Application.get_env(:kristas_dogs, :image_ref)}
   end
 
   defp etag_for(body) do

@@ -28,3 +28,9 @@ config :logger, level: :warning
 
 # Initialize plugs at runtime for faster test compilation
 config :phoenix, :plug_init_mode, :runtime
+
+# Disable the /api/stats/dots/* response cache in tests. It is a single
+# process-global ETS cache that lives outside Ecto's per-test sandbox
+# transaction, so leaving it enabled could let one test's cached
+# response leak into another test.
+config :kristas_dogs, :dots_cache_enabled, false

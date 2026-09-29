@@ -100,5 +100,39 @@ defmodule KristasDogs.HousesTest do
       assert {:ok, %Pet{} = pet} = Houses.create_pet(%{name: "n", data_id: "d", details_url: "u", profile_image_url: "p", age_text: "some age_text"})
       assert pet.normal_age_months == nil
     end
+
+    test "update_removed_dogs/1 sets removed_from_website_at and bumps updated_at for pets no longer seen" do
+      pet = pet_fixture()
+      pet |> change(updated_at: ~U[2025-01-01 00:00:00Z]) |> Repo.update!()
+
+      Houses.update_removed_dogs([])
+
+      updated = Houses.get_pet!(pet.id)
+      assert updated.removed_from_website_at != nil
+      assert updated.updated_at != ~U[2025-01-01 00:00:00Z]
+    end
+
+    test "update_removed_dogs/1 leaves updated_at unchanged for pets still seen" do
+      pet = pet_fixture()
+      pet |> change(updated_at: ~U[2025-01-01 00:00:00Z]) |> Repo.update!()
+
+      Houses.update_removed_dogs([pet.id])
+
+      updated = Houses.get_pet!(pet.id)
+      assert updated.removed_from_website_at == nil
+      assert updated.updated_at == ~U[2025-01-01 00:00:00Z]
+    end
+
+    test "unremove_dog/1 clears removed_from_website_at and bumps updated_at" do
+      pet = pet_fixture()
+      Houses.update_removed_dogs([])
+      pet |> change(updated_at: ~U[2025-01-01 00:00:00Z]) |> Repo.update!()
+
+      Houses.unremove_dog(pet.id)
+
+      updated = Houses.get_pet!(pet.id)
+      assert updated.removed_from_website_at == nil
+      assert updated.updated_at != ~U[2025-01-01 00:00:00Z]
+    end
   end
 end
