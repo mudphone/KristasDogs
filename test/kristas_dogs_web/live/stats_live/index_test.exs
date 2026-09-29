@@ -18,7 +18,7 @@ defmodule KristasDogsWeb.StatsLive.IndexTest do
 
     {:ok, _view, html} = live(conn, ~p"/stats")
 
-    assert html =~ "Time Listed Stats"
+    assert html =~ "Duration Listed"
     assert html =~ "By Breed"
     assert html =~ "By Size"
     assert html =~ "By Gender"
@@ -38,6 +38,6 @@ defmodule KristasDogsWeb.StatsLive.IndexTest do
 
   test "renders without error when there are no listed dogs at all", %{conn: conn} do
     assert {:ok, _view, html} = live(conn, ~p"/stats")
-    assert html =~ "Time Listed Stats"
+    assert html =~ "Duration Listed"
   end
 end
